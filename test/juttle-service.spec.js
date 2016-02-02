@@ -13,7 +13,7 @@ var JSDP = require('juttle-jsdp');
 var moment = require('moment');
 
 var juttleRoot = __dirname + '/juttle-root';
-logSetup({'log-level': process.env.DEBUG ? 'debug' : 'info'});
+logSetup({'log-level': 'info'});
 
 var juttleBaseUrl;
 var juttleHostPort;
