@@ -20,3 +20,6 @@ node_js:
 
 script:
     - npm test
+    - gulp test-coverage
+    - gulp lint
+

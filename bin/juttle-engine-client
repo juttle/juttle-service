@@ -152,13 +152,13 @@ if (opts.help ||
     usage();
 }
 
-opts.juttle-engine = opts['juttle-engine'];
+opts.juttle_engine = opts['juttle-engine'];
 
 var API_PREFIX = '/api/v0';
 
-var juttled_ws_url = 'ws://' + opts.juttle-engine + API_PREFIX;
-var juttled_noapi_ws_url = 'ws://' + opts.juttle-engine;
-var juttled_http_url = 'http://' + opts.juttle-engine + API_PREFIX;
+var juttled_ws_url = 'ws://' + opts.juttle_engine + API_PREFIX;
+var juttled_noapi_ws_url = 'ws://' + opts.juttle_engine;
+var juttled_http_url = 'http://' + opts.juttle_engine + API_PREFIX;
 
 var command = opts._[0];
 
