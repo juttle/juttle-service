@@ -16,6 +16,7 @@ var juttleRoot = __dirname + '/juttle-root';
 logSetup.init({'log-level': process.env.DEBUG ? 'debug' : 'info'});
 
 var juttleBaseUrl;
+var juttleHostPort;
 function run_path(path) {
     var bundle;
     return chakram.get(juttleBaseUrl + '/paths/' + path)
@@ -93,7 +94,8 @@ describe('Juttle Engine Tests', function() {
     before(function() {
         findFreePort(10000, 20000)
         .then((freePort) => {
-            juttleBaseUrl = 'http://localhost:' + freePort + '/api/v0';
+            juttleHostPort = 'http://localhost:' + freePort;
+            juttleBaseUrl = juttleHostPort + '/api/v0';
             juttled = new JuttleEngine({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
         });
     });
@@ -1777,6 +1779,30 @@ describe('Juttle Engine Tests', function() {
                     }
                 });
                 return chakram.wait();
+            });
+        });
+    });
+
+    describe('Rendezvous tests', function() {
+        it('Listen to a topic, can receive messages sent by other clients ', function(done) {
+            var listener = new WebSocket(juttleHostPort + '/rendezvous/my-topic');
+
+            listener.on('message', function(data) {
+                data = JSON.parse(data);
+                if (data.type === 'message') {
+                    expect(data.message).to.equal('my-message');
+                    listener.close();
+                    done();
+                }
+            });
+
+            listener.on('open', function() {
+                var sender = new WebSocket(juttleHostPort + '/rendezvous/my-topic');
+
+                sender.on('open', function() {
+                    sender.send(JSON.stringify({type: 'message', message: 'my-message'}));
+                    sender.close();
+                });
             });
         });
     });
