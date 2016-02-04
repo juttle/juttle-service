@@ -16,6 +16,7 @@ var juttleRoot = __dirname + '/juttle-root';
 logSetup.init({'log-level': process.env.DEBUG ? 'debug' : 'info'});
 
 var juttleBaseUrl;
+var juttleHostPort;
 function run_path(path) {
     var bundle;
     return chakram.get(juttleBaseUrl + '/paths/' + path)
@@ -93,8 +94,9 @@ describe('Juttle Engine Tests', function() {
     before(function() {
         findFreePort(10000, 20000)
         .then((freePort) => {
-            juttleBaseUrl = 'http://localhost:' + freePort + '/api/v0';
-            juttled = new JuttleEngine({port: freePort, root_directory: juttleRoot});
+            juttleHostPort = 'http://localhost:' + freePort;
+            juttleBaseUrl = juttleHostPort + '/api/v0';
+            juttled = new JuttleEngine({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
         });
     });
 
@@ -1153,6 +1155,7 @@ describe('Juttle Engine Tests', function() {
                     var num_ticks = 0;
                     var num_marks = 0;
                     var num_sink_ends = 0;
+                    var got_job_end_time = undefined;
                     ws_client = new WebSocket(juttleBaseUrl + '/jobs/' + job_id);
                     ws_client.on('message', function(data) {
                         //console.log("Got Websocket:", data);
@@ -1186,6 +1189,7 @@ describe('Juttle Engine Tests', function() {
                                 }
                             ]);
                         } else if (data.type === 'job_end') {
+                            got_job_end_time = Date.now();
                             expect(data.job_id === job_id);
 
                             // Now check that we received all the ticks/marks/etc we expected.
@@ -1196,7 +1200,6 @@ describe('Juttle Engine Tests', function() {
 
                             expect(num_marks).to.be.equal(6);
                             expect(num_sink_ends).to.equal(2);
-                            done();
                         } else if (data.type === 'tick') {
                             num_ticks++;
                             expect(data.sink_id).to.match(/view\d+/);
@@ -1225,6 +1228,19 @@ describe('Juttle Engine Tests', function() {
                                 expect(data.points[0].val2).to.equal(30);
                             }
                         }
+                    });
+
+                    ws_client.on('close', function(data) {
+
+                        // There should be at least 1 second between
+                        // the job_end message and the websocket
+                        // closing. This shows that
+                        // delayed_websocket_close is actually
+                        // working.
+
+                        var got_ws_close_time = Date.now();
+                        expect(got_ws_close_time-got_job_end_time).to.be.at.least(1000);
+                        done();
                     });
                 });
         };
@@ -1763,6 +1779,30 @@ describe('Juttle Engine Tests', function() {
                     }
                 });
                 return chakram.wait();
+            });
+        });
+    });
+
+    describe('Rendezvous tests', function() {
+        it('Listen to a topic, can receive messages sent by other clients ', function(done) {
+            var listener = new WebSocket(juttleHostPort + '/rendezvous/my-topic');
+
+            listener.on('message', function(data) {
+                data = JSON.parse(data);
+                if (data.type === 'message') {
+                    expect(data.message).to.equal('my-message');
+                    listener.close();
+                    done();
+                }
+            });
+
+            listener.on('open', function() {
+                var sender = new WebSocket(juttleHostPort + '/rendezvous/my-topic');
+
+                sender.on('open', function() {
+                    sender.send(JSON.stringify({type: 'message', message: 'my-message'}));
+                    sender.close();
+                });
             });
         });
     });
