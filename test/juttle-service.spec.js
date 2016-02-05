@@ -88,7 +88,7 @@ var has_syntax_error_info_obj = {
 //     - juttle program has syntax error
 //     - specifies inputs that don't actually map to anything in the program
 
-describe('Juttle Engine Tests', function() {
+describe('Juttle Service Tests', function() {
     var juttled;
 
     before(function() {

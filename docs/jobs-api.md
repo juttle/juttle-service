@@ -1,4 +1,4 @@
-# Juttle Engine API
+# Juttle Service API
 
 This document describes the API implemented by juttle-service to start, stop, and manage juttle programs and jobs. A client uses this API to run Juttle programs, resolve input controls, kill running jobs, introspect running jobs, and so forth.
 
