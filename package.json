@@ -1,11 +1,11 @@
 {
-  "name": "juttle-engine",
+  "name": "juttle-service",
   "version": "0.1.0",
   "description": "API-based execution engine for juttle programs",
-  "main": "bin/juttle-engine",
+  "main": "bin/juttle-service",
   "bin": {
-    "juttle-engine": "bin/juttle-engine",
-    "juttle-engine-client": "bin/juttle-engine-client"
+    "juttle-service": "bin/juttle-service",
+    "juttle-service-client": "bin/juttle-service-client"
   },
   "directories": {
     "doc": "docs",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/juttle/juttle-engine.git"
+    "url": "git+https://github.com/juttle/juttle-service.git"
   },
   "keywords": [
     "juttle",
@@ -27,9 +27,9 @@
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/juttle/juttle-engine/issues"
+    "url": "https://github.com/juttle/juttle-service/issues"
   },
-  "homepage": "https://github.com/juttle/juttle-engine#readme",
+  "homepage": "https://github.com/juttle/juttle-service#readme",
   "dependencies": {
     "CBuffer": "^1.1.1",
     "bluebird": "^3.2.1",
