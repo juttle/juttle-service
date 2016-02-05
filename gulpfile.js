@@ -15,8 +15,8 @@ gulp.task('lint-test', function() {
 
 gulp.task('lint-lib', function() {
     return gulp.src([
-        'bin/juttle-engine-client',
-        'bin/juttle-engine',
+        'bin/juttle-service-client',
+        'bin/juttle-service',
         'lib/**/*.js',
         'gulpfile.js'
     ])
