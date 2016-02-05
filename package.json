@@ -34,6 +34,7 @@
     "CBuffer": "^1.1.1",
     "bluebird": "^3.2.1",
     "body-parser": "^1.14.2",
+    "compression": "^1.6.1",
     "daemon": "^1.1.0",
     "double-ended-queue": "^0.9.7",
     "express": "^4.13.4",
