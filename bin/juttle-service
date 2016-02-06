@@ -2,7 +2,6 @@
 
 /* eslint no-console: 0 */
 var _ = require('underscore');
-var logSetup = require('../lib/log-setup');
 var minimist = require('minimist');
 var daemonize = require('daemon');
 var service = require('../lib/juttle-service');
@@ -64,7 +63,8 @@ if (extra.length > 0) {
     usage();
 }
 
-logSetup.init(opts);
+service.logSetup(_.defaults(opts, {'log-default-output': '/var/log/juttle-service.log'}));
+
 if (opts.daemonize) {
     daemonize();
 }
