@@ -2,10 +2,9 @@
 
 /* eslint no-console: 0 */
 var _ = require('underscore');
-var logSetup = require('../lib/log-setup');
 var minimist = require('minimist');
-var JuttleService = require('../lib/juttle-service');
 var daemonize = require('daemon');
+var service = require('../lib/juttle-service');
 
 var defaults = {
     'port': 2000,
@@ -64,12 +63,13 @@ if (extra.length > 0) {
     usage();
 }
 
-logSetup.init(opts);
+service.logSetup(_.defaults(opts, {'log-default-output': '/var/log/juttle-service.log'}));
+
 if (opts.daemonize) {
     daemonize();
 }
 
-require('log4js').getLogger('demo').debug('initializing');
+require('log4js').getLogger('juttle-service').debug('initializing');
 
 var service_opts = {port: opts.port, root_directory: opts.root};
 
@@ -77,4 +77,4 @@ if (_.has(opts, 'config')) {
     service_opts.config_path = opts['config'];
 }
 
-new JuttleService(service_opts);
+service.run(service_opts);

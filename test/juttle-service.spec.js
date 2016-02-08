@@ -2,7 +2,7 @@ var _ = require('underscore');
 var chakram = require('chakram');
 var expect = chakram.expect;
 var logSetup = require('../lib/log-setup');
-var JuttleService = require('../lib/juttle-service');
+var service = require('../lib/juttle-service');
 var WebSocket = require('ws');
 var Promise = require('bluebird');
 var findFreePort = Promise.promisify(require('find-free-port'));
@@ -13,7 +13,7 @@ var JSDP = require('juttle-jsdp');
 var moment = require('moment');
 
 var juttleRoot = __dirname + '/juttle-root';
-logSetup.init({'log-level': process.env.DEBUG ? 'debug' : 'info'});
+logSetup({'log-level': process.env.DEBUG ? 'debug' : 'info'});
 
 var juttleBaseUrl;
 var juttleHostPort;
@@ -96,7 +96,7 @@ describe('Juttle Service Tests', function() {
         .then((freePort) => {
             juttleHostPort = 'http://localhost:' + freePort;
             juttleBaseUrl = juttleHostPort + '/api/v0';
-            juttled = new JuttleService({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
+            juttled = service.run({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
         });
     });
 
