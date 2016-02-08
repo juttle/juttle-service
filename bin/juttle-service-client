@@ -108,7 +108,7 @@ function push_file(filename, topic) {
 
         console.log('Bundling program ' + filename + ' and pushing to rendezvous topic ' + topic + '...');
         // Open a websocket connection over the rendezvous channel
-        var ws = new WebSocket(juttled_noapi_ws_url + '/rendezvous/' + topic);
+        var ws = new WebSocket(svc_noapi_ws_url + '/rendezvous/' + topic);
         ws.on('open', function() {
             // Bundle the program locally and push the bundle over the websocket.
             var bundler = new JuttleBundler();
@@ -156,9 +156,9 @@ opts.juttle_service = opts['juttle-service'];
 
 var API_PREFIX = '/api/v0';
 
-var juttled_ws_url = 'ws://' + opts.juttle_service + API_PREFIX;
-var juttled_noapi_ws_url = 'ws://' + opts.juttle_service;
-var juttled_http_url = 'http://' + opts.juttle_service + API_PREFIX;
+var svc_ws_url = 'ws://' + opts.juttle_service + API_PREFIX;
+var svc_noapi_ws_url = 'ws://' + opts.juttle_service;
+var svc_http_url = 'http://' + opts.juttle_service + API_PREFIX;
 
 var command = opts._[0];
 
@@ -167,7 +167,7 @@ switch (command) {
     case 'list_jobs':
         var job_id = opts.job || '';
 
-        rp(juttled_http_url + '/jobs/' + job_id)
+        rp(svc_http_url + '/jobs/' + job_id)
             .then(function(body) {
                 console.log(JSON.stringify(JSON.parse(body), null, 2));
             }).error(function(e) {
@@ -178,7 +178,7 @@ switch (command) {
 
     case 'list_observers':
 
-        rp(juttled_http_url + '/observers/')
+        rp(svc_http_url + '/observers/')
             .then(function(body) {
                 console.log(JSON.stringify(JSON.parse(body), null, 2));
             }).error(function(e) {
@@ -192,7 +192,7 @@ switch (command) {
 
         if (opts.observer !== undefined) {
             console.log('Subscribing to all jobs associated with observer:', opts.observer);
-            ws = new WebSocket(juttled_ws_url + '/observers/' + opts.observer);
+            ws = new WebSocket(svc_ws_url + '/observers/' + opts.observer);
             ws.on('message', function(message) {
                 console.log('received: %s', message);
                 var msg = JSON.parse(message);
@@ -206,7 +206,7 @@ switch (command) {
             });
         } else if (opts.job !== undefined) {
             console.log('Subscribing to job:', opts.job);
-            ws = new WebSocket(juttled_ws_url + '/jobs/' + opts.job);
+            ws = new WebSocket(svc_ws_url + '/jobs/' + opts.job);
             ws.on('message', function(message) {
                 console.log('received: %s', message);
                 var msg = JSON.parse(message);
@@ -227,7 +227,7 @@ switch (command) {
 
     case 'delete':
         if (opts.job !== undefined) {
-            rp({method: 'DELETE', uri: juttled_http_url + '/jobs/' + opts.job})
+            rp({method: 'DELETE', uri: svc_http_url + '/jobs/' + opts.job})
                 .then(function(body) {
                     console.log(JSON.stringify(JSON.parse(body), null, 2));
                 }).error(function(e) {
@@ -244,7 +244,7 @@ switch (command) {
 
             var runInputs = read_inputs(opts.inputs);
 
-            rp(juttled_http_url + '/paths/' + opts.path)
+            rp(svc_http_url + '/paths/' + opts.path)
                 .then(function(body) {
                     body = JSON.parse(body);
                     return body.bundle;
@@ -258,7 +258,7 @@ switch (command) {
                     }
                     var post_opts = {
                         method: 'POST',
-                        uri: juttled_http_url + '/jobs',
+                        uri: svc_http_url + '/jobs',
                         headers: {
                             'Content-type': 'application/json'
                         },
@@ -323,7 +323,7 @@ switch (command) {
     case 'get_inputs':
         var getInputs = read_inputs(opts.inputs);
 
-        rp(juttled_http_url + '/paths/' + opts.path)
+        rp(svc_http_url + '/paths/' + opts.path)
             .then(function(body) {
                 body = JSON.parse(body);
                 return body.bundle;
@@ -334,7 +334,7 @@ switch (command) {
                 };
                 var post_opts = {
                     method: 'POST',
-                    uri: juttled_http_url + '/prepare',
+                    uri: svc_http_url + '/prepare',
                     headers: {
                         'Content-type': 'application/json'
                     },
