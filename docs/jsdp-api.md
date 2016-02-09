@@ -8,7 +8,7 @@ Every event has a `type` property which describes the type of event.
 
 ### Receiving Events
 
-JuttleD can send the following messages:
+The Juttle Service can send the following messages:
 
 | Message | Description
 |-------|------------
@@ -17,13 +17,13 @@ JuttleD can send the following messages:
 | points | An array of points for a given sink
 | tick | A data-less point
 | mark | Indicates the end of a batch
-| points_processed | Current count of points JuttleD has processed for current program
+| points_processed | Current count of points the Juttle Service has processed for current program
 | sink_end | The execution for a given sink has ended
 | job_end | The current job has ended
 
 ### Sending Events
 
-The client can send the following events to JuttleD
+The client can send the following events to the Juttle Service
 
 | Event | Description
 |-------|------------
@@ -33,7 +33,7 @@ The client can send the following events to JuttleD
 
 #### ping
 
-A response from JuttleD that the websocket connection has been successfully established.
+A response from the Juttle Service that the websocket connection has been successfully established.
 
 ```
 {
@@ -148,7 +148,7 @@ Sent to indicate that a job has completed and will not send any more points.
 #### pong
 
 Sent from the client in response to a ping. If no pong is received
-after several pings, JuttleD will close the websocket connection.
+after several pings, the Juttle Service will close the websocket connection.
 
 ```
 {

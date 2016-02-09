@@ -89,19 +89,19 @@ var has_syntax_error_info_obj = {
 //     - specifies inputs that don't actually map to anything in the program
 
 describe('Juttle Service Tests', function() {
-    var juttled;
+    var juttle_service;
 
     before(function() {
         findFreePort(10000, 20000)
         .then((freePort) => {
             juttleHostPort = 'http://localhost:' + freePort;
             juttleBaseUrl = juttleHostPort + '/api/v0';
-            juttled = service.run({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
+            juttle_service = service.run({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
         });
     });
 
     after(function() {
-        juttled.stop();
+        juttle_service.stop();
     });
 
     describe('Job Info Fetch Tests', function() {
