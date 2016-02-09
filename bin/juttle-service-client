@@ -9,15 +9,15 @@ var rp = require('request-promise');
 var path = require('path');
 var cli_errors = require('juttle/lib/cli/errors');
 var rp_errors = require('request-promise/errors');
-var open = require('open');
 var JuttleBundler = require('../lib/bundler');
 var chokidar = require('chokidar');
 var fs = require('fs');
 var crypto = require('crypto');
 
 var defaults = {
-    'juttle-service': 'localhost:8080',
-    'topic': 'default'
+    'juttle-service': 'localhost:2000',
+    'topic': 'default',
+    'wait': false
 };
 
 var opts = minimist(process.argv.slice(2));
@@ -30,13 +30,14 @@ function usage() {
     console.log('         list_observers');
     console.log('         push --path <path> --topic <rendezvous-topic>');
     console.log('         watch --path <path> --topic <rendezvous-topic>');
-    console.log('         run --path <path> [--observer <observer-id>]');
+    console.log('         run --path <path> [--wait] [--observer <observer-id>]');
     console.log('         delete --job <job-id>');
     console.log('         get_inputs --path <path> --input name=val [--input name=val ...]');
-    console.log('         browser --path <path>');
     console.log('   [OPTIONS]: one of the following:');
     console.log('       --path <path-to-juttle-file>:          Path to file relative to configured root directory.');
     console.log('                                              Used by "run", "get_inputs", "push", "watch".');
+    console.log('       --wait                                 If true, wait for program to finish');
+    console.log('                                                (default false, job starts in background)');
     console.log('       --input name=val:                      One or more input values.');
     console.log('                                              Used by "get_inputs".');
     console.log('       --job <job-id>:                        Job id.');
@@ -251,7 +252,8 @@ switch (command) {
                 }).then(function(bundle) {
                     var body = {
                         bundle: bundle,
-                        inputs: runInputs
+                        inputs: runInputs,
+                        wait: opts.wait
                     };
                     if (opts.observer) {
                         body.observer = opts.observer;
@@ -264,9 +266,17 @@ switch (command) {
                         },
                         body: JSON.stringify(body)
                     };
+
+                    if (opts.wait) {
+                        console.log('Starting program and waiting for it to finish...');
+                    }
                     return rp(post_opts)
                         .then(function(body) {
-                            console.log('Started job', body);
+                            if (opts.wait) {
+                                console.log('Job output:\n' + JSON.stringify(JSON.parse(body), null, 2));
+                            } else {
+                                console.log('Started job', body);
+                            }
                         });
                 }).catch(rp_errors.RequestError, function (e) {
                     console.error('ERROR', e.message);
@@ -350,16 +360,6 @@ switch (command) {
                 handle_error(e, opts.path);
             });
 
-        break;
-
-    case 'browser':
-        if (opts.path) {
-            var absPath = path.resolve(opts.path);
-            open('http://' + opts['juttle-service'] + '/run?path=' + absPath);
-
-        } else {
-            usage();
-        }
         break;
 
     default:
