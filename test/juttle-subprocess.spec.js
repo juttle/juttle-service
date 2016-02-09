@@ -95,9 +95,9 @@ describe('juttle-subprocess', function() {
             }
         });
 
-        return waitForMessage({ type: 'compile_error' })
+        return waitForMessage({ type: 'juttle_error' })
         .then(function() {
-            var message = findMessage({ type: 'compile_error' });
+            var message = findMessage({ type: 'juttle_error' });
             expect(message.err.message).to.contain('adapter waffles not registered');
         });
     });
