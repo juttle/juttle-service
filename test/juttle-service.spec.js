@@ -2,7 +2,7 @@ var _ = require('underscore');
 var chakram = require('chakram');
 var expect = chakram.expect;
 var logSetup = require('../lib/log-setup');
-var JuttleService = require('../lib/juttle-service');
+var service = require('../lib/juttle-service');
 var WebSocket = require('ws');
 var Promise = require('bluebird');
 var findFreePort = Promise.promisify(require('find-free-port'));
@@ -99,7 +99,7 @@ describe('Juttle Service Tests', function() {
 
             // Set all of the config values for the service directly
             // just so we get increased code coverage in routes.js
-            juttle_service = JuttleService.service.run({
+            juttle_service = service.run({
                 port: freePort,
                 root_directory: juttleRoot,
                 config: {

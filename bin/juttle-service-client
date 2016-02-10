@@ -3,7 +3,7 @@
 /* eslint no-console: 0 */
 var _ = require('underscore');
 var minimist = require('minimist');
-var JuttleServiceClient = require('../lib/juttle-service-client');
+var client = require('..').client;
 
 var defaults = {
     'juttle-service': 'localhost:2000',
@@ -17,9 +17,9 @@ _.defaults(opts, defaults);
 
 if (opts.help ||
     opts._.length !== 1) {
-    JuttleServiceClient.usage();
+    client.usage();
 }
 
 var command = opts._[0];
 
-JuttleServiceClient.command(opts['juttle-service'], opts, command);
+client.command(opts['juttle-service'], opts, command);
