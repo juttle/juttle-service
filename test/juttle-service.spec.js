@@ -96,7 +96,21 @@ describe('Juttle Service Tests', function() {
         .then((freePort) => {
             juttleHostPort = 'http://localhost:' + freePort;
             juttleBaseUrl = juttleHostPort + '/api/v0';
-            juttle_service = JuttleService.service.run({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
+
+            // Set all of the config values for the service directly
+            // just so we get increased code coverage in routes.js
+            juttle_service = JuttleService.service.run({
+                port: freePort,
+                root_directory: juttleRoot,
+                config: {
+                    'juttle-service': {
+                        delayed_endpoint_close: 2000,
+                        max_saved_messages: 1000,
+                        delayed_job_cleanup: 10000,
+                        compress_response: false
+                    }
+                }
+            });
         });
     });
 

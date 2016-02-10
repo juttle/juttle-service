@@ -143,12 +143,39 @@ describe('juttle-service-client tests', function() {
         }, {interval: 100, max_tries: 10});
     });
 
+    it('Can run a job with --wait', function() {
+        let opts = {path: 'simple.juttle', 'wait': true};
+        JuttleService.client.command(server, opts, 'run');
+        return retry(function() {
+            expect(current_output).to.contain('Starting program and waiting for it to finish');
+            expect(exit_status).to.equal(undefined);
+        }, {interval: 100, max_tries: 10});
+    });
+
+    it('Can run a job with syntax errors and get errors back', function() {
+        let opts = {path: 'has-syntax-error.juttle'};
+        JuttleService.client.command(server, opts, 'run');
+        return retry(function() {
+            expect(current_errors).to.contain('JUTTLE-SYNTAX-ERROR-WITH-EXPECTED');
+            expect(exit_status).to.equal(undefined);
+        }, {interval: 100, max_tries: 10});
+    });
+
     it('Can get_inputs', function() {
         let opts = {path: 'inputs.juttle', input: 'inval=my'};
         JuttleService.client.command(server, opts, 'get_inputs');
         return retry(function() {
             expect(current_output).to.contain('"value": "my"');
             expect(exit_status).to.equal(undefined);
+        }, {interval: 100, max_tries: 10});
+    });
+
+    it('Can get_inputs with errors', function() {
+        let opts = {path: 'inputs.juttle', input: 'inval'};
+        JuttleService.client.command(server, opts, 'get_inputs');
+        return retry(function() {
+            expect(current_errors).to.contain('invalid input inval');
+            expect(exit_status).to.equal(1);
         }, {interval: 100, max_tries: 10});
     });
 
