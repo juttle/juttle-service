@@ -9,7 +9,7 @@ var service = require('../lib/juttle-service');
 let juttle_service_cmd = path.resolve(`${__dirname}/../bin/juttle-service`);
 let juttle_service_client_cmd = path.resolve(`${__dirname}/../bin/juttle-service-client`);
 
-describe('juttle-service-client binary unit tests', function() {
+describe('juttle-service-client binary', function() {
 
     let server;
     let juttle_service;
@@ -26,7 +26,7 @@ describe('juttle-service-client binary unit tests', function() {
         juttle_service.stop();
     });
 
-    it('Can execute juttle-service-client binary with --help', function() {
+    it('can be run with --help', function() {
         try {
             child_process.execSync(`${juttle_service_client_cmd} --help`);
         } catch (err) {
@@ -36,7 +36,7 @@ describe('juttle-service-client binary unit tests', function() {
         }
     });
 
-    it('Can execute juttle-service-client binary with list_jobs', function(done) {
+    it('can be run with list_jobs', function(done) {
 
         let got_output = false;
 
@@ -60,9 +60,9 @@ describe('juttle-service-client binary unit tests', function() {
 });
 
 
-describe('juttle-service binary unit tests', function() {
+describe('juttle-service binary', function() {
 
-    it('Can execute juttle-service binary with --help', function() {
+    it('can be run with --help', function() {
         try {
             child_process.exec(`${juttle_service_cmd} --help`);
         } catch (err) {
@@ -72,7 +72,7 @@ describe('juttle-service binary unit tests', function() {
         }
     });
 
-    it('Can execute juttle-service binary and see startup line', function(done) {
+    it('can be run and can see startup line', function(done) {
         findFreePort(10000, 20000)
         .then((freePort) => {
             let child = child_process.exec(`${juttle_service_cmd} --port ${freePort}`);
