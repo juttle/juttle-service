@@ -78,9 +78,11 @@ describe('juttle-service binary', function() {
             let child = child_process.exec(`${juttle_service_cmd} --port ${freePort}`);
             child.stdout.on('data', (data) => {
                 if (data.toString().match(/Juttle service listening at/)) {
-                    child.kill();
-                    done();
+                    child.kill('SIGKILL');
                 }
+            });
+            child.on('close', (code) => {
+                done();
             });
         });
     });
