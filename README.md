@@ -47,6 +47,28 @@ usage: [--port <port>] [--root <path>]
 
 The Juttle compiler and runtime within juttle-service are also configured via the juttle configuration file, typically at ``$(HOME)/.juttle/config.json``. For more information on the juttle configuration file, see the [juttle configuration documentation](https://github.com/juttle/juttle/blob/master/docs/reference/cli.md#configuration).
 
+The Juttle Service configuration options (default values shown):
+
+```javascript
+// config.json
+{
+    "juttle-service": {
+        // Whether HTTP responses should be compressed when
+        // the client supports it.
+        "compress_response": true,
+
+        // Time (in ms) a finished job should wait for the first websocket
+        // to connect before disposing of the results.       
+        "delayed_job_cleanup": 10000,
+
+        // The number messages job should buffer for sending to
+        // websockets that join after the job has started.
+        "max_saved_messages": 1024
+    },
+    "adapters": { ... }
+}
+```
+
 ### Module resolution
 
 When juttle-service resolves module references in juttle programs while creating program bundles, it searches the following locations:
