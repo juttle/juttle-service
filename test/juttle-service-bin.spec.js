@@ -72,7 +72,7 @@ describe('juttle-service binary', function() {
         }
     });
 
-    it('can be run and can see startup line', function(done) {
+    it.skip('can be run and can see startup line', function(done) {
         findFreePort(10000, 20000)
         .then((freePort) => {
             let child = child_process.exec(`${juttle_service_cmd} --port ${freePort}`);
