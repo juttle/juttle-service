@@ -2,10 +2,8 @@
 var expect = require('chai').expect;
 var Promise = require('bluebird');
 var findFreePort = Promise.promisify(require('find-free-port'));
-var service = require('../lib/juttle-service');
+var JuttleService = require('../lib/juttle-service');
 var retry = require('bluebird-retry');
-
-var JuttleServiceClient = require('../lib/juttle-service-client');
 
 describe('juttle-service-client tests', function() {
     var juttle_service;
@@ -40,7 +38,7 @@ describe('juttle-service-client tests', function() {
         findFreePort(10000, 20000)
         .then((freePort) => {
             server = 'localhost:' + freePort;
-            juttle_service = service.run({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
+            juttle_service = JuttleService.service.run({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
         });
     });
 
@@ -55,7 +53,7 @@ describe('juttle-service-client tests', function() {
         mycmd_called = false;
         myarg_value = false;
 
-        JuttleServiceClient.init({
+        JuttleService.client.init({
             write_output: save_output,
             write_error: save_error,
             client_exit: note_exit,
@@ -82,7 +80,7 @@ describe('juttle-service-client tests', function() {
     });
 
     it('Can call usage()', function(done) {
-        JuttleServiceClient.usage();
+        JuttleService.client.usage();
         expect(current_output).to.contain('mycmd');
         expect(current_output).to.contain('--myarg <myval>');
         expect(current_output).to.contain('list_jobs');
@@ -93,7 +91,7 @@ describe('juttle-service-client tests', function() {
 
     it('Can call list_jobs for all jobs', function() {
         let opts = {};
-        JuttleServiceClient.command(server, opts, 'list_jobs');
+        JuttleService.client.command(server, opts, 'list_jobs');
         return retry(function() {
             expect(current_output).to.contain('[]');
             expect(exit_status).to.equal(undefined);
@@ -102,7 +100,7 @@ describe('juttle-service-client tests', function() {
 
     it('Can call list_observers for all observers', function() {
         let opts = {};
-        JuttleServiceClient.command(server, opts, 'list_observers');
+        JuttleService.client.command(server, opts, 'list_observers');
         return retry(function() {
             expect(current_output).to.contain('[]');
             expect(exit_status).to.equal(undefined);
@@ -111,7 +109,7 @@ describe('juttle-service-client tests', function() {
 
     it('Can call subscribe for an observer id', function() {
         let opts = {observer: 'myobserver'};
-        ws = JuttleServiceClient.command(server, opts, 'subscribe');
+        ws = JuttleService.client.command(server, opts, 'subscribe');
         return retry(function() {
             expect(current_output).to.contain('Subscribing to all jobs associated with observer');
             expect(exit_status).to.equal(undefined);
@@ -120,7 +118,7 @@ describe('juttle-service-client tests', function() {
 
     it('Can call subscribe for a job id', function() {
         let opts = {job: 'myjob'};
-        JuttleServiceClient.command(server, opts, 'subscribe');
+        JuttleService.client.command(server, opts, 'subscribe');
         return retry(function() {
             expect(current_output).to.contain('Web socket connection closed, exiting');
             expect(exit_status).to.equal(0);
@@ -129,7 +127,7 @@ describe('juttle-service-client tests', function() {
 
     it('Can delete a job', function() {
         let opts = {job: 'myjob'};
-        JuttleServiceClient.command(server, opts, 'delete');
+        JuttleService.client.command(server, opts, 'delete');
         return retry(function() {
             expect(current_errors).to.contain('No such job: myjob');
             expect(exit_status).to.equal(undefined);
@@ -138,25 +136,52 @@ describe('juttle-service-client tests', function() {
 
     it('Can run a job', function() {
         let opts = {path: 'simple.juttle'};
-        JuttleServiceClient.command(server, opts, 'run');
+        JuttleService.client.command(server, opts, 'run');
         return retry(function() {
             expect(current_output).to.contain('Started job: {"job_id":');
             expect(exit_status).to.equal(undefined);
         }, {interval: 100, max_tries: 10});
     });
 
+    it('Can run a job with --wait', function() {
+        let opts = {path: 'simple.juttle', 'wait': true};
+        JuttleService.client.command(server, opts, 'run');
+        return retry(function() {
+            expect(current_output).to.contain('Starting program and waiting for it to finish');
+            expect(exit_status).to.equal(undefined);
+        }, {interval: 100, max_tries: 10});
+    });
+
+    it('Can run a job with syntax errors and get errors back', function() {
+        let opts = {path: 'has-syntax-error.juttle'};
+        JuttleService.client.command(server, opts, 'run');
+        return retry(function() {
+            expect(current_errors).to.contain('JUTTLE-SYNTAX-ERROR-WITH-EXPECTED');
+            expect(exit_status).to.equal(undefined);
+        }, {interval: 100, max_tries: 10});
+    });
+
     it('Can get_inputs', function() {
         let opts = {path: 'inputs.juttle', input: 'inval=my'};
-        JuttleServiceClient.command(server, opts, 'get_inputs');
+        JuttleService.client.command(server, opts, 'get_inputs');
         return retry(function() {
             expect(current_output).to.contain('"value": "my"');
             expect(exit_status).to.equal(undefined);
         }, {interval: 100, max_tries: 10});
     });
 
+    it('Can get_inputs with errors', function() {
+        let opts = {path: 'inputs.juttle', input: 'inval'};
+        JuttleService.client.command(server, opts, 'get_inputs');
+        return retry(function() {
+            expect(current_errors).to.contain('invalid input inval');
+            expect(exit_status).to.equal(1);
+        }, {interval: 100, max_tries: 10});
+    });
+
     it('Can call custom provided command', function() {
         let opts = {myval: 'foo'};
-        JuttleServiceClient.command(server, opts, 'mycmd');
+        JuttleService.client.command(server, opts, 'mycmd');
         return retry(function() {
             expect(mycmd_called).to.equal(true);
             expect(myarg_value).to.equal('foo');
@@ -165,7 +190,7 @@ describe('juttle-service-client tests', function() {
     });
 
     it('Get Usage for unrecognized command', function() {
-        JuttleServiceClient.command(server, {}, 'nocmd');
+        JuttleService.client.command(server, {}, 'nocmd');
         return retry(function() {
             expect(current_output).to.contain('usage: ');
             expect(exit_status).to.equal(1);
