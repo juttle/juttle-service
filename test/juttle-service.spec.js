@@ -1794,4 +1794,12 @@ describe('Juttle Service Tests', function() {
             });
         });
     });
+
+    describe('cors', function() {
+        it('responses return cors header allow all origins', function() {
+            var response = chakram.get(juttleBaseUrl + '/directory')
+            expect(response).to.have.header('Access-Control-Allow-Origin', '*');
+            return chakram.wait();
+        })
+    });
 });
