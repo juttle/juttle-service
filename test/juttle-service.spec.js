@@ -1794,28 +1794,4 @@ describe('Juttle Service Tests', function() {
             });
         });
     });
-
-    describe('Rendezvous tests', function() {
-        it('Listen to a topic, can receive messages sent by other clients ', function(done) {
-            var listener = new WebSocket(juttleHostPort + '/rendezvous/my-topic');
-
-            listener.on('message', function(data) {
-                data = JSON.parse(data);
-                if (data.type === 'message') {
-                    expect(data.message).to.equal('my-message');
-                    listener.close();
-                    done();
-                }
-            });
-
-            listener.on('open', function() {
-                var sender = new WebSocket(juttleHostPort + '/rendezvous/my-topic');
-
-                sender.on('open', function() {
-                    sender.send(JSON.stringify({type: 'message', message: 'my-message'}));
-                    sender.close();
-                });
-            });
-        });
-    });
 });
