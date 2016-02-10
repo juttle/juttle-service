@@ -20,8 +20,6 @@ if (opts.help ||
     JuttleServiceClient.usage();
 }
 
-opts.juttle_service = opts['juttle-service'];
-
 var command = opts._[0];
 
-JuttleServiceClient.handle_command(opts, command);
+JuttleServiceClient.command(opts['juttle-service'], opts, command);
