@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('underscore');
 var chakram = require('chakram');
 var expect = chakram.expect;
@@ -481,7 +483,7 @@ describe('Juttle Service Tests', function() {
                     expect(body.path).to.equal('/');
                     expect(body.directories).to.deep.equal(['subdir']);
                     expect(body.juttles.length).to.be.above(0);
-                })
+                });
             });
 
             it('list contents of subdir', function() {
@@ -492,7 +494,7 @@ describe('Juttle Service Tests', function() {
                     expect(response.body.path).to.equal('/subdir');
                     expect(response.body.directories.length).to.equal(0);
                     expect(response.body.juttles.length).to.be.above(0);
-                })
+                });
             });
 
             it('list root using subdir + ..', function() {
@@ -505,14 +507,14 @@ describe('Juttle Service Tests', function() {
                     expect(body.path).to.equal('/');
                     expect(body.directories).to.deep.equal(['subdir']);
                     expect(body.juttles.length).to.be.above(0);
-                })
+                });
             });
 
         });
 
         describe('Invalid cases', function() {
             it('non existant path 404s', function() {
-                var response = chakram.get(juttleBaseUrl + '/directory?path=non-existent')
+                var response = chakram.get(juttleBaseUrl + '/directory?path=non-existent');
                 expect(response).to.have.status(404);
                 expect(response).to.have.json({
                     code: 'JS-DIR-NOT-FOUND-ERROR',
@@ -1797,9 +1799,9 @@ describe('Juttle Service Tests', function() {
 
     describe('cors', function() {
         it('responses return cors header allow all origins', function() {
-            var response = chakram.get(juttleBaseUrl + '/directory')
+            var response = chakram.get(juttleBaseUrl + '/directory');
             expect(response).to.have.header('Access-Control-Allow-Origin', '*');
             return chakram.wait();
-        })
+        });
     });
 });
