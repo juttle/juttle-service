@@ -85,6 +85,8 @@ describe('juttle-service-client tests', function() {
         JuttleServiceClient.usage();
         expect(current_output).to.contain('mycmd');
         expect(current_output).to.contain('--myarg <myval>');
+        expect(current_output).to.contain('list_jobs');
+        expect(current_output).to.contain('--job <job-id>');
         expect(exit_status).to.equal(1);
         done();
     });
