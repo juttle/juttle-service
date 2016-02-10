@@ -35,7 +35,6 @@
     "bluebird": "^3.2.1",
     "body-parser": "^1.14.2",
     "compression": "^1.6.1",
-    "chokidar": "^1.4.2",
     "daemon": "^1.1.0",
     "double-ended-queue": "^0.9.7",
     "express": "^4.13.4",
@@ -47,6 +46,7 @@
     "minimist": "^1.2.0",
     "moment": "^2.11.1",
     "request-promise": "^2.0.0",
+    "sprintf-js": "^1.0.3",
     "underscore": "^1.8.3",
     "uuid": "^2.0.1",
     "ws": "^0.4.31"
