@@ -4,7 +4,8 @@
 var _ = require('underscore');
 var minimist = require('minimist');
 var daemonize = require('daemon');
-var service = require('../lib/juttle-service');
+var service = require('..').service;
+var logSetup = require('..').logSetup;
 
 var defaults = {
     'port': 2000,
@@ -63,7 +64,7 @@ if (extra.length > 0) {
     usage();
 }
 
-service.logSetup(_.defaults(opts, {'log-default-output': '/var/log/juttle-service.log'}));
+logSetup(_.defaults(opts, {'log-default-output': '/var/log/juttle-service.log'}));
 
 if (opts.daemonize) {
     daemonize();
