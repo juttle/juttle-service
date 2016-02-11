@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('underscore');
 var chakram = require('chakram');
 var expect = chakram.expect;
@@ -1265,6 +1267,31 @@ describe('Juttle Service Tests', function() {
 
             it('Late subscriber (after job stops) can still get start, points, end messages', function(done) {
                 run_program_with_initial_timeout(8000, done);
+            });
+
+            it('delayed_endpoint_close honored when job finishes after websocket connects', function(done) {
+                chakram.post(juttleBaseUrl + '/jobs', {
+                    bundle: {program: 'emit -limit 5 | put v = count() | view table'}
+                }).then(function(response) {
+                    let job_id = response.body.job_id;
+                    let ws_client = new WebSocket(juttleBaseUrl + '/jobs/' + job_id);
+                    let job_end_time;
+                    ws_client.on('message', function(data) {
+                        // workaround for https://github.com/juttle/juttle-service/issues/17
+                        if (data === '') { return; }
+
+                        data = JSDP.deserialize(data);
+
+                        if (data.type === 'job_end') {
+                            job_end_time = Date.now();
+                        }
+                    });
+
+                    ws_client.on('close', function() {
+                        expect(Date.now() - job_end_time).to.be.at.least(1000);
+                        done();
+                    });
+                });
             });
 
             it('runtime errors', function() {
