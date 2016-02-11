@@ -1,6 +1,13 @@
 # Change Log
 This file documents all notable changes to juttle-service. The release numbering uses [semantic versioning](http://semver.org).
 
+## 0.2.1
+Released 2016-02-11
+
+### Bug Fixes
+- delayed_endpoint_close: honor when websocket connects before job finishes. [[#38]](https://github.com/juttle/juttle-service/pull/38)
+- jobs-api doc: fix example to use view0 instead of sink0 [[#36]](https://github.com/juttle/juttle-service/issues/36)
+
 ## 0.2.0
 Released 2016-02-10
 
