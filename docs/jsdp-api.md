@@ -17,6 +17,7 @@ The Juttle Service can send the following messages:
 | points | An array of points for a given view
 | tick | A data-less point
 | mark | Indicates the end of a batch
+| log | An object containing one log message from the subprocess.
 | points_processed | Current count of points the Juttle Service has processed for current program
 | view_end | The execution for a given view has ended
 | job_end | The current job has ended
@@ -124,6 +125,19 @@ Reflects the end of a batch.
   }
 ```
 
+#### log
+
+Sent as logs come in when program started with debug parameter set.
+
+```
+{
+  type: 'log',
+  name: 'log-name',
+  level: 'log-level',
+  arguments: [ 'foo', 'bar' ]
+  }
+```
+
 #### view_end
 
 Sent to indicate that a view is finished and will not send any more points.
@@ -155,4 +169,3 @@ after several pings, the Juttle Service will close the websocket connection.
     type: "pong"
 }
 ```
-
