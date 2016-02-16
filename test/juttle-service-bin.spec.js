@@ -28,7 +28,7 @@ describe('juttle-service-client binary', function() {
 
     it('can be run with --help', function() {
         try {
-            child_process.execSync(`${juttle_service_client_cmd} --help`);
+            child_process.spawnSync(juttle_service_client_cmd, ['--help']);
         } catch (err) {
             // The status is 1, but we can also check the output for 'usage:'
             expect(err.status).to.equal(1);
@@ -40,9 +40,9 @@ describe('juttle-service-client binary', function() {
 
         let got_output = false;
 
-        // Can't use execSync here, as the server is running within
+        // Can't use spawnSync here, as the server is running within
         // our own process, and spawnSync blocks the event loop.
-        let child = child_process.exec(`${juttle_service_client_cmd} --juttle-service ${server} list_jobs`);
+        let child = child_process.spawn(juttle_service_client_cmd, ['--juttle-service', server,  'list_jobs']);
 
         child.stdout.on('data', (data) => {
             if (data.toString().match(/\[\]/)) {
@@ -64,7 +64,7 @@ describe('juttle-service binary', function() {
 
     it('can be run with --help', function() {
         try {
-            child_process.exec(`${juttle_service_cmd} --help`);
+            child_process.spawn(juttle_service_cmd, ['--help']);
         } catch (err) {
             // The status is 1, but we can also check the output for 'usage:'
             expect(err.status).to.equal(1);
@@ -72,10 +72,10 @@ describe('juttle-service binary', function() {
         }
     });
 
-    it.skip('can be run and can see startup line', function(done) {
+    it('can be run and can see startup line', function(done) {
         findFreePort(10000, 20000)
         .then((freePort) => {
-            let child = child_process.exec(`${juttle_service_cmd} --port ${freePort}`);
+            let child = child_process.spawn(juttle_service_cmd, ['--port', freePort]);
             child.stdout.on('data', (data) => {
                 if (data.toString().match(/Juttle service listening at/)) {
                     child.kill('SIGKILL');
@@ -83,6 +83,9 @@ describe('juttle-service binary', function() {
             });
             child.on('close', (code) => {
                 done();
+            });
+            child.on('error', (msg) => {
+                throw new Error(`Got unexpected error from child: ${msg}`);
             });
         });
     });
