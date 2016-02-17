@@ -1168,7 +1168,7 @@ describe('Juttle Service Tests', function() {
                     var num_points = 0;
                     var num_ticks = 0;
                     var num_marks = 0;
-                    var num_sink_ends = 0;
+                    var num_view_ends = 0;
                     var got_job_end_time = undefined;
                     ws_client = new WebSocket(juttleBaseUrl + '/jobs/' + job_id);
                     ws_client.on('message', function(data) {
@@ -1177,26 +1177,26 @@ describe('Juttle Service Tests', function() {
                         if (data.type === 'job_start') {
                             got_job_start = true;
                             expect(data.job_id === job_id);
-                            expect(data.sinks[0].sink_id).to.match(/view\d+/);
-                            expect(data.sinks[1].sink_id).to.match(/view\d+/);
+                            expect(data.views[0].view_id).to.match(/view\d+/);
+                            expect(data.views[1].view_id).to.match(/view\d+/);
 
-                            // Change the sink ids to just "sink" to
+                            // Change the view ids to just "view" to
                             // allow for an exact match of the full
-                            // sink description.
-                            data.sinks[0].sink_id = 'sink';
-                            data.sinks[1].sink_id = 'sink';
+                            // view description.
+                            data.views[0].view_id = 'view';
+                            data.views[1].view_id = 'view';
 
-                            expect(data.sinks).to.deep.equal([
+                            expect(data.views).to.deep.equal([
                                 {
                                     type: 'table',
-                                    sink_id: 'sink',
+                                    view_id: 'view',
                                     options: {
                                         '_jut_time_bounds': []
                                     }
                                 },
                                 {
                                     type: 'logger',
-                                    sink_id: 'sink',
+                                    view_id: 'view',
                                     options: {
                                         '_jut_time_bounds': []
                                     }
@@ -1213,22 +1213,22 @@ describe('Juttle Service Tests', function() {
                             expect(num_ticks).to.equal(2);
 
                             expect(num_marks).to.be.equal(6);
-                            expect(num_sink_ends).to.equal(2);
+                            expect(num_view_ends).to.equal(2);
                         } else if (data.type === 'tick') {
                             num_ticks++;
-                            expect(data.sink_id).to.match(/view\d+/);
+                            expect(data.view_id).to.match(/view\d+/);
                             expect(data.job_id).to.equal(job_id);
                         } else if (data.type === 'mark') {
                             num_marks++;
-                            expect(data.sink_id).to.match(/view\d+/);
+                            expect(data.view_id).to.match(/view\d+/);
                             expect(data.job_id).to.equal(job_id);
-                        } else if (data.type === 'sink_end') {
-                            num_sink_ends++;
-                            expect(data.sink_id).to.match(/view\d+/);
+                        } else if (data.type === 'view_end') {
+                            num_view_ends++;
+                            expect(data.view_id).to.match(/view\d+/);
                             expect(data.job_id).to.equal(job_id);
                         } else if (data.type === 'points') {
                             num_points++;
-                            expect(data.sink_id).to.match(/view\d+/);
+                            expect(data.view_id).to.match(/view\d+/);
                             expect(data.job_id).to.equal(job_id);
                             expect(data.points).to.have.length(1);
 
