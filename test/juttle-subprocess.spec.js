@@ -120,7 +120,7 @@ describe('juttle-subprocess', function() {
             return waitForMessage({ type: 'log', level: 'warn' });
         })
         .then(function() {
-            var message = findMessage({ type: 'log', level: 'warn' });
+            var message = JSDP.deserialize(findMessage({ type: 'log', level: 'warn' }));
             expect(message.arguments[0]).to.contain('Invalid operand types for "+": number (0) and date (2014-01-01T00:00:00.000Z)');
             // verify location data is provided
             expect(message.arguments[1].info.location).to.not.be.undefined;
@@ -146,7 +146,7 @@ describe('juttle-subprocess', function() {
             return waitForMessage({ type: 'log', level: 'error' });
         })
         .then(function() {
-            var message = findMessage({ type: 'log', level: 'error' });
+            var message = JSDP.deserialize(findMessage({ type: 'log', level: 'error' }));
             expect(message.arguments[0]).to.contain('ENOENT: no such file or directory, open \'inexistent\'');
 
             // verify location data is provided
