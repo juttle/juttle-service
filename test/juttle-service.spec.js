@@ -807,6 +807,32 @@ describe('Juttle Service Tests', function() {
 
                 return chakram.wait();
             });
+            it('return logs only if debug option is true', function() {
+                return chakram.post(juttleBaseUrl + '/jobs/', {
+                    bundle: {
+                        program: 'emit -from :0: -limit 1 | put foo=\'bar\' | view text'
+                    },
+                    wait: true,
+                    debug: true
+                }).then(function(response) {
+                    expect(response.body.logs).to.have.length.gt(0);
+                    _.each(response.body.logs, function(log) {
+                        expect(log.type).to.equal('log');
+                        expect(log).to.include.keys('name', 'level', 'arguments');
+                    });
+                })
+                .then(function() {
+                    return chakram.post(juttleBaseUrl + '/jobs/', {
+                        bundle: {
+                            program: 'emit -from :0: -limit 1 | put foo=\'bar\' | view text'
+                        },
+                        wait: true
+                    });
+                })
+                .then(function(response) {
+                    expect(response.body.logs).to.equal(undefined);
+                });
+            });
         });
     });
 
@@ -1139,10 +1165,11 @@ describe('Juttle Service Tests', function() {
 
     describe('Juttle Data Websocket Tests', function() {
 
-        var run_program_with_initial_timeout = function(initial_delay, done) {
-            var ws_client;
+        var run_program_with_initial_timeout = function(initial_delay, options) {
+            options = options || {};
 
-            chakram.post(juttleBaseUrl + '/jobs', {
+            var ws_client;
+            var payload = {
                 bundle: {program: 'import \"module.juttle\" as mod;' +
                          'input my_input: dropdown -label "My Input" -items [10, 20, 30];' +
                          'input my_date_input: date;' +
@@ -1158,92 +1185,104 @@ describe('Juttle Service Tests', function() {
                 }, {
                     toObject: true
                 })
-            })
+            };
+            _.extend(payload, options);
+
+            return chakram.post(juttleBaseUrl + '/jobs', payload)
             // Add an initial delay to force use of the job
             // manager replay ability for new websockets.
             .delay(initial_delay)
-                .then(function(response) {
-                    var job_id = response.body.job_id;
-                    var got_job_start = false;
-                    var num_points = 0;
-                    var num_ticks = 0;
-                    var num_marks = 0;
-                    var num_view_ends = 0;
-                    var got_job_end_time = undefined;
-                    ws_client = new WebSocket(juttleBaseUrl + '/jobs/' + job_id);
-                    ws_client.on('message', function(data) {
-                        //console.log("Got Websocket:", data);
-                        data = JSDP.deserialize(data);
-                        if (data.type === 'job_start') {
-                            got_job_start = true;
-                            expect(data.job_id === job_id);
-                            expect(data.views[0].view_id).to.match(/view\d+/);
-                            expect(data.views[1].view_id).to.match(/view\d+/);
+            .then(function(response) {
+                var job_id = response.body.job_id;
+                var got_job_start = false;
+                var num_points = 0;
+                var num_logs = 0;
+                var num_ticks = 0;
+                var num_marks = 0;
+                var num_view_ends = 0;
+                var got_job_end_time = undefined;
+                ws_client = new WebSocket(juttleBaseUrl + '/jobs/' + job_id);
+                ws_client.on('message', function(data) {
+                    //console.log("Got Websocket:", data);
+                    data = JSDP.deserialize(data);
+                    if (data.type === 'job_start') {
+                        got_job_start = true;
+                        expect(data.job_id === job_id);
+                        expect(data.views[0].view_id).to.match(/view\d+/);
+                        expect(data.views[1].view_id).to.match(/view\d+/);
 
-                            // Change the view ids to just "view" to
-                            // allow for an exact match of the full
-                            // view description.
-                            data.views[0].view_id = 'view';
-                            data.views[1].view_id = 'view';
+                        // Change the view ids to just "view" to
+                        // allow for an exact match of the full
+                        // view description.
+                        data.views[0].view_id = 'view';
+                        data.views[1].view_id = 'view';
 
-                            expect(data.views).to.deep.equal([
-                                {
-                                    type: 'table',
-                                    view_id: 'view',
-                                    options: {
-                                        '_jut_time_bounds': []
-                                    }
-                                },
-                                {
-                                    type: 'logger',
-                                    view_id: 'view',
-                                    options: {
-                                        '_jut_time_bounds': []
-                                    }
+                        expect(data.views).to.deep.equal([
+                            {
+                                type: 'table',
+                                view_id: 'view',
+                                options: {
+                                    '_jut_time_bounds': []
                                 }
-                            ]);
-                        } else if (data.type === 'job_end') {
-                            got_job_end_time = Date.now();
-                            expect(data.job_id === job_id);
-
-                            // Now check that we received all the ticks/marks/etc we expected.
-                            expect(got_job_start).to.be.true;
-                            expect(num_points).to.equal(4);
-
-                            expect(num_ticks).to.equal(2);
-
-                            expect(num_marks).to.be.equal(6);
-                            expect(num_view_ends).to.equal(2);
-                        } else if (data.type === 'tick') {
-                            num_ticks++;
-                            expect(data.view_id).to.match(/view\d+/);
-                            expect(data.job_id).to.equal(job_id);
-                        } else if (data.type === 'mark') {
-                            num_marks++;
-                            expect(data.view_id).to.match(/view\d+/);
-                            expect(data.job_id).to.equal(job_id);
-                        } else if (data.type === 'view_end') {
-                            num_view_ends++;
-                            expect(data.view_id).to.match(/view\d+/);
-                            expect(data.job_id).to.equal(job_id);
-                        } else if (data.type === 'points') {
-                            num_points++;
-                            expect(data.view_id).to.match(/view\d+/);
-                            expect(data.job_id).to.equal(job_id);
-                            expect(data.points).to.have.length(1);
-
-                            // val properties come from the
-                            // input. val2 properties come from the
-                            // module.
-                            if (_.has(data.points[0], 'fromInput')) {
-                                expect(data.points[0].val).to.equal(20);
-                                expect(data.points[0].datePlus2s.getTime()).to.equal(new Date(3000).getTime());
-                            } else {
-                                expect(data.points[0].val2).to.equal(30);
+                            },
+                            {
+                                type: 'logger',
+                                view_id: 'view',
+                                options: {
+                                    '_jut_time_bounds': []
+                                }
                             }
-                        }
-                    });
+                        ]);
+                    } else if (data.type === 'job_end') {
+                        got_job_end_time = Date.now();
+                        expect(data.job_id === job_id);
 
+                        // Now check that we received all the ticks/marks/etc we expected.
+                        expect(got_job_start).to.be.true;
+                        expect(num_points).to.equal(4);
+
+                        if (options.debug) {
+                            expect(num_logs).gt(0);
+                        } else {
+                            expect(num_logs).to.equal(0);
+                        }
+
+                        expect(num_ticks).to.equal(2);
+
+                        expect(num_marks).to.be.equal(6);
+                        expect(num_view_ends).to.equal(2);
+                    } else if (data.type === 'tick') {
+                        num_ticks++;
+                        expect(data.view_id).to.match(/view\d+/);
+                        expect(data.job_id).to.equal(job_id);
+                    } else if (data.type === 'mark') {
+                        num_marks++;
+                        expect(data.view_id).to.match(/view\d+/);
+                        expect(data.job_id).to.equal(job_id);
+                    } else if (data.type === 'view_end') {
+                        num_view_ends++;
+                        expect(data.view_id).to.match(/view\d+/);
+                        expect(data.job_id).to.equal(job_id);
+                    } else if (data.type === 'log') {
+                        num_logs++;
+                    } else if (data.type === 'points') {
+                        num_points++;
+                        expect(data.view_id).to.match(/view\d+/);
+                        expect(data.job_id).to.equal(job_id);
+                        expect(data.points).to.have.length(1);
+
+                        // val properties come from the
+                        // input. val2 properties come from the
+                        // module.
+                        if (_.has(data.points[0], 'fromInput')) {
+                            expect(data.points[0].val).to.equal(20);
+                            expect(data.points[0].datePlus2s.getTime()).to.equal(new Date(3000).getTime());
+                        } else {
+                            expect(data.points[0].val2).to.equal(30);
+                        }
+                    }
+                });
+                return new Promise(function(resolve, reject) {
                     ws_client.on('close', function(data) {
 
                         // There should be at least 1 second between
@@ -1254,19 +1293,24 @@ describe('Juttle Service Tests', function() {
 
                         var got_ws_close_time = Date.now();
                         expect(got_ws_close_time-got_job_end_time).to.be.at.least(1000);
-                        done();
+                        resolve();
                     });
                 });
+            });
         };
 
         describe('Valid Cases', function() {
             this.timeout(30000);
-            it('Single websocket can get start, points, end messages', function(done) {
-                run_program_with_initial_timeout(2000, done);
+            it('Single websocket can get start, points, end messages', function() {
+                return run_program_with_initial_timeout(2000);
             });
 
-            it('Late subscriber (after job stops) can still get start, points, end messages', function(done) {
-                run_program_with_initial_timeout(8000, done);
+            it('Late subscriber (after job stops) can still get start, points, end messages', function() {
+                return run_program_with_initial_timeout(8000);
+            });
+
+            it('debug option provides logs', function() {
+                return run_program_with_initial_timeout(2000, { debug: true });
             });
 
             it('delayed_endpoint_close honored when job finishes after websocket connects', function(done) {
