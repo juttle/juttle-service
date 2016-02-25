@@ -795,7 +795,7 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'bar', 'time:date': '1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', points: [{foo: 'bar', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
                                 _jut_time_bounds: []
                             },
@@ -883,11 +883,11 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'mark', 'time:date': '1970-01-01T00:00:00.000Z'},
-                                   {type: 'points', points: [{'time:date': '1970-01-01T00:00:00.000Z'}, {'time:date': '1970-01-01T00:00:01.000Z'}]},
-                                   {type: 'mark', 'time:date': '1970-01-01T00:00:02.000Z'},
-                                   {type: 'points', points: [{'time:date': '1970-01-01T00:00:02.000Z'}]},
-                                   {type: 'mark', 'time:date': '1970-01-01T00:00:04.000Z'}],
+                            data: [{type: 'mark', 'time': '$date$1970-01-01T00:00:00.000Z'},
+                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:00.000Z'}, {'time': '$date$1970-01-01T00:00:01.000Z'}]},
+                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:02.000Z'},
+                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:02.000Z'}]},
+                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:04.000Z'}],
                             options: {
                                 _jut_time_bounds: [],
                                 format: 'raw'
@@ -895,11 +895,11 @@ describe('Juttle Service Tests', function() {
                             type: 'text'
                         },
                         view1: {
-                            data: [{type: 'mark', 'time:date': '1970-01-01T00:00:00.000Z'},
-                                   {type: 'points', points: [{'time:date': '1970-01-01T00:00:00.000Z'}, {'time:date': '1970-01-01T00:00:01.000Z'}]},
-                                   {type: 'mark', 'time:date': '1970-01-01T00:00:02.000Z'},
-                                   {type: 'points', points: [{'time:date': '1970-01-01T00:00:02.000Z'}]},
-                                   {type: 'mark', 'time:date': '1970-01-01T00:00:04.000Z'}],
+                            data: [{type: 'mark', 'time': '$date$1970-01-01T00:00:00.000Z'},
+                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:00.000Z'}, {'time': '$date$1970-01-01T00:00:01.000Z'}]},
+                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:02.000Z'},
+                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:02.000Z'}]},
+                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:04.000Z'}],
                             options: {
                                 _jut_time_bounds: [],
                                 title: 'My Table'
@@ -920,7 +920,7 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'bar', 'time:date': '1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', points: [{foo: 'bar', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
                                 _jut_time_bounds: []
                             },
@@ -948,7 +948,7 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'baz', 'time:date': '1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', points: [{foo: 'baz', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
                                 _jut_time_bounds: []
                             },

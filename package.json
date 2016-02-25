@@ -42,7 +42,7 @@
     "express-ws": "^1.0.0-rc.2",
     "fs-extra": "^0.26.5",
     "juttle": "^0.5.1",
-    "juttle-jsdp": "^0.1.1",
+    "juttle-jsdp": "^0.3.0",
     "log4js": "^0.6.30",
     "minimist": "^1.2.0",
     "moment": "^2.11.1",
