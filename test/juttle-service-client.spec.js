@@ -157,7 +157,7 @@ describe('juttle-service-client tests', function() {
         let opts = {path: 'has-syntax-error.juttle'};
         client.command(server, opts, 'run');
         return retry(function() {
-            expect(current_errors).to.contain('JUTTLE-SYNTAX-ERROR-WITH-EXPECTED');
+            expect(current_errors).to.contain('SYNTAX-ERROR-WITH-EXPECTED');
             expect(exit_status).to.equal(undefined);
         }, {interval: 100, max_tries: 10});
     });

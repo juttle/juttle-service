@@ -44,7 +44,7 @@ var has_syntax_error_info_obj = {
         program: 'emit -every :0.33s: -limit 5\n    | batch -every :1s:\n    | batch -every :1s:\n    | puty foo="bar"\n    | view table -display.progressive true\n'
     },
     err: {
-        code: 'JUTTLE-SYNTAX-ERROR-WITH-EXPECTED',
+        code: 'SYNTAX-ERROR-WITH-EXPECTED',
         info: {
             expected: [
                 {
@@ -332,7 +332,7 @@ describe('Juttle Service Tests', function() {
                             program: 'import \'no-such-juttle.juttle\' as nope;\n\nemit -limit 10 | put x=nope.a | view timechart;\n'
                         },
                         err: {
-                            code: 'RT-MODULE-NOT-FOUND',
+                            code: 'MODULE-NOT-FOUND',
                             info: {
                                 location: {
                                     'end': {
@@ -624,7 +624,7 @@ describe('Juttle Service Tests', function() {
                         bundle: bundle,
                         err: {
 
-                            code: 'JUTTLE-SYNTAX-ERROR-WITH-EXPECTED',
+                            code: 'SYNTAX-ERROR-WITH-EXPECTED',
                             info: {
                                 expected: [
                                     {
@@ -681,8 +681,7 @@ describe('Juttle Service Tests', function() {
                     info: {
                         bundle: bundle,
                         err: {
-
-                            code: 'JUTTLE-SYNTAX-ERROR-WITH-EXPECTED',
+                            code: 'SYNTAX-ERROR-WITH-EXPECTED',
                             info: {
                                 expected: [
                                     {
@@ -736,7 +735,7 @@ describe('Juttle Service Tests', function() {
                     info: {
                         bundle: bundle,
                         err: {
-                            code: 'RT-MODULE-NOT-FOUND',
+                            code: 'MODULE-NOT-FOUND',
                             info: {
                                 location: {
                                     end: {
@@ -966,7 +965,7 @@ describe('Juttle Service Tests', function() {
                 expect(response).to.have.status(200);
                 expect(response).to.have.json({
                     errors: [{
-                        code: 'RT-INTERNAL-ERROR',
+                        code: 'INTERNAL-ERROR',
                         info: {
                             error: 'Error: ENOENT: no such file or directory, open \'nobody\'',
                             location: {
@@ -974,7 +973,7 @@ describe('Juttle Service Tests', function() {
                                 filename: 'main',
                                 start: {column: 1, line: 1, offset: 0}
                             },
-                            procName: 'read'
+                            procName: 'read-file'
                         },
                         message: 'internal error Error: ENOENT: no such file or directory, open \'nobody\''
                     }],
@@ -1000,7 +999,7 @@ describe('Juttle Service Tests', function() {
                 expect(response).to.have.json({
                     errors: [],
                     warnings: [{
-                        code: 'RT-FIELD-NOT-FOUND',
+                        code: 'FIELD-NOT-FOUND',
                         info: {
                             field: 'nobody',
                             location: {
@@ -1790,7 +1789,7 @@ describe('Juttle Service Tests', function() {
                         bundle: bundle,
                         err: {
                             message: 'Cannot run a program without a flowgraph.',
-                            code: 'RT-PROGRAM-WITHOUT-FLOWGRAPH',
+                            code: 'PROGRAM-WITHOUT-FLOWGRAPH',
                             info: {
                                 location: {
                                     filename: 'main',
@@ -1823,7 +1822,7 @@ describe('Juttle Service Tests', function() {
                         bundle: bundle,
                         err: {
                             message: 'Expected ";", "|" or option but "j" found.',
-                            code: 'JUTTLE-SYNTAX-ERROR-WITH-EXPECTED',
+                            code: 'SYNTAX-ERROR-WITH-EXPECTED',
                             info: {
                                 location: {
                                     end: {

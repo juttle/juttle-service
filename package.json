@@ -41,6 +41,7 @@
     "express": "^4.13.4",
     "express-ws": "^1.0.0-rc.2",
     "fs-extra": "^0.26.5",
+    "juttle": "^0.5.1",
     "juttle-jsdp": "^0.1.1",
     "log4js": "^0.6.30",
     "minimist": "^1.2.0",
@@ -50,9 +51,6 @@
     "underscore": "^1.8.3",
     "uuid": "^2.0.1",
     "ws": "^0.4.31"
-  },
-  "peerDependencies": {
-    "juttle": "^0.4.0"
   },
   "devDependencies": {
     "bluebird-retry": "^0.5.3",
