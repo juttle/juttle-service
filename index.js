@@ -7,6 +7,7 @@ var getLogger = require('log4js').getLogger;
 
 module.exports = {
     service: require('./lib/juttle-service'),
+    getVersionInfo: require('./lib/version'),
     logSetup: require('./lib/log-setup'),
     getLogger: getLogger,
     JuttleBundler: require('./lib/bundler'),
