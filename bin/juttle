@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+'use strict';
+
+//
+// Simple helper script to expose the juttle CLI as part of an
+// juttle-service installation.
+//
+let path = require('path');
+let juttle = path.resolve(__dirname, '../node_modules/juttle/bin/juttle');
+require(juttle)

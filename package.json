@@ -1,11 +1,12 @@
 {
   "name": "juttle-service",
-  "version": "0.2.1",
+  "version": "0.3.0-rc.0",
   "description": "API-based execution engine for juttle programs",
   "main": "index",
   "bin": {
     "juttle-service": "bin/juttle-service",
-    "juttle-service-client": "bin/juttle-service-client"
+    "juttle-service-client": "bin/juttle-service-client",
+    "juttle": "bin/juttle"
   },
   "directories": {
     "doc": "docs",
@@ -41,7 +42,8 @@
     "express": "^4.13.4",
     "express-ws": "^1.0.0-rc.2",
     "fs-extra": "^0.26.5",
-    "juttle-jsdp": "^0.1.1",
+    "juttle": "^0.5.1",
+    "juttle-jsdp": "^0.3.0",
     "log4js": "^0.6.30",
     "minimist": "^1.2.0",
     "moment": "^2.11.1",
@@ -50,9 +52,6 @@
     "underscore": "^1.8.3",
     "uuid": "^2.0.1",
     "ws": "^0.4.31"
-  },
-  "peerDependencies": {
-    "juttle": "^0.4.0"
   },
   "devDependencies": {
     "bluebird-retry": "^0.5.3",
@@ -64,6 +63,7 @@
     "gulp-istanbul": "^0.10.3",
     "gulp-mocha": "^2.1.3",
     "isparta": "^4.0.0",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3"
   }
 }

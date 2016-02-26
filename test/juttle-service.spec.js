@@ -10,6 +10,8 @@ var Promise = require('bluebird');
 var findFreePort = Promise.promisify(require('find-free-port'));
 var fs = Promise.promisifyAll(require('fs'));
 var fs_extra = Promise.promisifyAll(require('fs-extra'));
+var JuttleAdapters = require('juttle/lib/runtime/adapters');
+var sinon = require('sinon');
 
 var JSDP = require('juttle-jsdp');
 var moment = require('moment');
@@ -44,7 +46,7 @@ var has_syntax_error_info_obj = {
         program: 'emit -every :0.33s: -limit 5\n    | batch -every :1s:\n    | batch -every :1s:\n    | puty foo="bar"\n    | view table -display.progressive true\n'
     },
     err: {
-        code: 'JUTTLE-SYNTAX-ERROR-WITH-EXPECTED',
+        code: 'SYNTAX-ERROR-WITH-EXPECTED',
         info: {
             expected: [
                 {
@@ -332,7 +334,7 @@ describe('Juttle Service Tests', function() {
                             program: 'import \'no-such-juttle.juttle\' as nope;\n\nemit -limit 10 | put x=nope.a | view timechart;\n'
                         },
                         err: {
-                            code: 'RT-MODULE-NOT-FOUND',
+                            code: 'MODULE-NOT-FOUND',
                             info: {
                                 location: {
                                     'end': {
@@ -624,7 +626,7 @@ describe('Juttle Service Tests', function() {
                         bundle: bundle,
                         err: {
 
-                            code: 'JUTTLE-SYNTAX-ERROR-WITH-EXPECTED',
+                            code: 'SYNTAX-ERROR-WITH-EXPECTED',
                             info: {
                                 expected: [
                                     {
@@ -681,8 +683,7 @@ describe('Juttle Service Tests', function() {
                     info: {
                         bundle: bundle,
                         err: {
-
-                            code: 'JUTTLE-SYNTAX-ERROR-WITH-EXPECTED',
+                            code: 'SYNTAX-ERROR-WITH-EXPECTED',
                             info: {
                                 expected: [
                                     {
@@ -736,7 +737,7 @@ describe('Juttle Service Tests', function() {
                     info: {
                         bundle: bundle,
                         err: {
-                            code: 'RT-MODULE-NOT-FOUND',
+                            code: 'MODULE-NOT-FOUND',
                             info: {
                                 location: {
                                     end: {
@@ -796,7 +797,7 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'bar', 'time:date': '1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', points: [{foo: 'bar', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
                                 _jut_time_bounds: []
                             },
@@ -884,11 +885,11 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'mark', 'time:date': '1970-01-01T00:00:00.000Z'},
-                                   {type: 'points', points: [{'time:date': '1970-01-01T00:00:00.000Z'}, {'time:date': '1970-01-01T00:00:01.000Z'}]},
-                                   {type: 'mark', 'time:date': '1970-01-01T00:00:02.000Z'},
-                                   {type: 'points', points: [{'time:date': '1970-01-01T00:00:02.000Z'}]},
-                                   {type: 'mark', 'time:date': '1970-01-01T00:00:04.000Z'}],
+                            data: [{type: 'mark', 'time': '$date$1970-01-01T00:00:00.000Z'},
+                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:00.000Z'}, {'time': '$date$1970-01-01T00:00:01.000Z'}]},
+                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:02.000Z'},
+                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:02.000Z'}]},
+                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:04.000Z'}],
                             options: {
                                 _jut_time_bounds: [],
                                 format: 'raw'
@@ -896,11 +897,11 @@ describe('Juttle Service Tests', function() {
                             type: 'text'
                         },
                         view1: {
-                            data: [{type: 'mark', 'time:date': '1970-01-01T00:00:00.000Z'},
-                                   {type: 'points', points: [{'time:date': '1970-01-01T00:00:00.000Z'}, {'time:date': '1970-01-01T00:00:01.000Z'}]},
-                                   {type: 'mark', 'time:date': '1970-01-01T00:00:02.000Z'},
-                                   {type: 'points', points: [{'time:date': '1970-01-01T00:00:02.000Z'}]},
-                                   {type: 'mark', 'time:date': '1970-01-01T00:00:04.000Z'}],
+                            data: [{type: 'mark', 'time': '$date$1970-01-01T00:00:00.000Z'},
+                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:00.000Z'}, {'time': '$date$1970-01-01T00:00:01.000Z'}]},
+                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:02.000Z'},
+                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:02.000Z'}]},
+                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:04.000Z'}],
                             options: {
                                 _jut_time_bounds: [],
                                 title: 'My Table'
@@ -921,7 +922,7 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'bar', 'time:date': '1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', points: [{foo: 'bar', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
                                 _jut_time_bounds: []
                             },
@@ -949,7 +950,7 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'baz', 'time:date': '1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', points: [{foo: 'baz', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
                                 _jut_time_bounds: []
                             },
@@ -966,7 +967,7 @@ describe('Juttle Service Tests', function() {
                 expect(response).to.have.status(200);
                 expect(response).to.have.json({
                     errors: [{
-                        code: 'RT-INTERNAL-ERROR',
+                        code: 'INTERNAL-ERROR',
                         info: {
                             error: 'Error: ENOENT: no such file or directory, open \'nobody\'',
                             location: {
@@ -974,7 +975,7 @@ describe('Juttle Service Tests', function() {
                                 filename: 'main',
                                 start: {column: 1, line: 1, offset: 0}
                             },
-                            procName: 'read'
+                            procName: 'read-file'
                         },
                         message: 'internal error Error: ENOENT: no such file or directory, open \'nobody\''
                     }],
@@ -1000,7 +1001,7 @@ describe('Juttle Service Tests', function() {
                 expect(response).to.have.json({
                     errors: [],
                     warnings: [{
-                        code: 'RT-FIELD-NOT-FOUND',
+                        code: 'FIELD-NOT-FOUND',
                         info: {
                             field: 'nobody',
                             location: {
@@ -1790,7 +1791,7 @@ describe('Juttle Service Tests', function() {
                         bundle: bundle,
                         err: {
                             message: 'Cannot run a program without a flowgraph.',
-                            code: 'RT-PROGRAM-WITHOUT-FLOWGRAPH',
+                            code: 'PROGRAM-WITHOUT-FLOWGRAPH',
                             info: {
                                 location: {
                                     filename: 'main',
@@ -1823,7 +1824,7 @@ describe('Juttle Service Tests', function() {
                         bundle: bundle,
                         err: {
                             message: 'Expected ";", "|" or option but "j" found.',
-                            code: 'JUTTLE-SYNTAX-ERROR-WITH-EXPECTED',
+                            code: 'SYNTAX-ERROR-WITH-EXPECTED',
                             info: {
                                 location: {
                                     end: {
@@ -1871,6 +1872,54 @@ describe('Juttle Service Tests', function() {
             var response = chakram.get(juttleBaseUrl + '/directory');
             expect(response).to.have.header('Access-Control-Allow-Origin', '*');
             return chakram.wait();
+        });
+    });
+
+    describe('version', function() {
+        let adapterListStub;
+        before(function() {
+            adapterListStub = sinon.stub(JuttleAdapters, 'list');
+            adapterListStub.returns([
+                {
+                    adapter: 'elastic',
+                    version: '0.4.0'
+                },
+                {
+                    adapter: 'file',
+                    version: '0.5.1'
+                }
+            ]);
+        });
+
+        after(function() {
+            adapterListStub.restore();
+        });
+
+        function verifyVersionInfo(versionInfo) {
+            let VERSION_REGEX = /[0-9]+\.[0-9]+\.[0-9]+/;
+            expect(versionInfo['juttle-elastic-adapter']).to.equal('0.4.0');
+            expect(versionInfo['juttle']).to.match(VERSION_REGEX);
+            expect(versionInfo['juttle-service']).to.match(VERSION_REGEX);
+            expect(versionInfo['juttle-jsdp']).to.match(VERSION_REGEX);
+            // built in adapters (file in this case) should not be listed
+            expect(versionInfo).to.have.keys([
+                'juttle-elastic-adapter',
+                'juttle',
+                'juttle-service',
+                'juttle-jsdp'
+            ]);
+        }
+
+        it('juttle-service.getVersionInfo', function() {
+            let versionInfo = service.getVersionInfo();
+            verifyVersionInfo(versionInfo);
+        });
+
+        it('/version endpoint', function() {
+            return chakram.get(juttleHostPort + '/version')
+                .then(function(response) {
+                    verifyVersionInfo(response.body);
+                });
         });
     });
 });
