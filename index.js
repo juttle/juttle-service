@@ -9,6 +9,8 @@ module.exports = {
     service: require('./lib/juttle-service'),
     getVersionInfo: require('./lib/version'),
     logSetup: require('./lib/log-setup'),
+    // Exposing cliErrors (for juttle-engine to access) is a temporary hack.
+    cliErrors: require('juttle/lib/cli/errors'),
     getLogger: getLogger,
     JuttleBundler: require('./lib/bundler'),
     WebsocketEndpoint: require('./lib/websocket-endpoint'),
