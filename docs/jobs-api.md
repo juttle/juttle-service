@@ -285,3 +285,20 @@ GET /api/v0/paths/forever.juttle HTTP/1.1
     }
 }
 ```
+
+###GET /api/v0/version-info
+
+Returns the running version of juttle-service and its components including juttle and adapters.
+
+```
+GET /api/v0/version-info HTTP/1.1
+```
+
+```
+{
+    "juttle-service": "0.3.0",
+    "juttle": "0.5.1",
+    "juttle-jsdp": "0.3.0",
+    "juttle-elastic-adapter": "0.5.0"
+}
+```
