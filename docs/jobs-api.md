@@ -142,7 +142,7 @@ POST /api/v0/jobs HTTP/1.1
 
 Note the `timeout` property in the body. If a program runs for more than *timeout* ms, the program is aborted and an error is returned. If not specified, *timeout* is 60000 (60 seconds).
 
-When the `debug` property in the body is set to `true` the response body will contain a `logs` array and a `log` event will be published to the websocket. 
+When the `debug` property in the body is set to `true` the response body will contain a `logs` array and a `log` event will be published to the websocket.
 
 ###GET /api/v0/jobs/*jobID*
 
