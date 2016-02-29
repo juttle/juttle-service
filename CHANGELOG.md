@@ -1,6 +1,27 @@
 # Change Log
 This file documents all notable changes to juttle-service. The release numbering uses [semantic versioning](http://semver.org).
 
+## 0.3.0
+Release 2016-02-29
+
+### Major changes
+NOTICE: This release includes breaking changes to the wire format.
+- Update to reflect changes in Juttle 0.5.0. [[#54]](https://github.com/juttle/juttle-service/pull/54)
+- Convert all extendable-base classes to ES6 classes [[#41]](https://github.com/juttle/juttle-service/pull/41)
+- Update all remaining references to 'sink' in JSDP messages to 'view'. *This changes the JSDP wire format*. [[#37]](https://github.com/juttle/juttle-service/issues/37)
+
+### Minor changes
+- Add a `/version` endpoint that returns version information on the juttle and adapter modules in use [[#56]](https://github.com/juttle/juttle-service/pull/56) [[#62]](https://github.com/juttle/juttle-service/pull/62)
+- Add additional test coverage for log initialization and configuration [[#40]](https://github.com/juttle/juttle-service/pull/40)
+- Add stricter lint checks [[#35]](https://github.com/juttle/juttle-service/pull/35)
+- Add additional test coverage for executing binary programs like `bin/juttle-service`, `bin/juttle-service-client` [[#43]](https://github.com/juttle/juttle-service/pull/43)
+- Update tests/job manager to reflect additional serialization for log messages from juttle subprocess [[#46]](https://github.com/juttle/juttle-service/pull/46) [[#48]](https://github.com/juttle/juttle-service/pull/48)
+- When starting a program via `POST /api/v0/jobs`, you can now provide a `debug: true` property to enable debug logging. The debug logs will be sent over the websocket/available in the immediate repsonse. [[#42]](https://github.com/juttle/juttle-service/issues/42)
+- Add a `bin/juttle` wrapper script to execute the juttle cli program from the juttle module [[#55]](https://github.com/juttle/juttle-service/pull/55)
+
+### Bug fixes
+- Prevent empty messages from being sent over the JSDP websocket connection [[#17]](https://github.com/juttle/juttle-service/issues/17)
+
 ## 0.2.1
 Released 2016-02-11
 
