@@ -2,7 +2,7 @@
 This file documents all notable changes to juttle-service. The release numbering uses [semantic versioning](http://semver.org).
 
 ## 0.3.0
-Release 2016-02-26
+Release 2016-02-29
 
 ### Major changes
 NOTICE: This release includes breaking changes to the wire format.
@@ -11,7 +11,7 @@ NOTICE: This release includes breaking changes to the wire format.
 - Update all remaining references to 'sink' in JSDP messages to 'view'. *This changes the JSDP wire format*. [[#37]](https://github.com/juttle/juttle-service/issues/37)
 
 ### Minor changes
-- Add a `/version` endpoint that returns version information on the juttle and adapter modules in use [[#56]](https://github.com/juttle/juttle-service/pull/56)
+- Add a `/version` endpoint that returns version information on the juttle and adapter modules in use [[#56]](https://github.com/juttle/juttle-service/pull/56) [[#62]](https://github.com/juttle/juttle-service/pull/62)
 - Add additional test coverage for log initialization and configuration [[#40]](https://github.com/juttle/juttle-service/pull/40)
 - Add stricter lint checks [[#35]](https://github.com/juttle/juttle-service/pull/35)
 - Add additional test coverage for executing binary programs like `bin/juttle-service`, `bin/juttle-service-client` [[#43]](https://github.com/juttle/juttle-service/pull/43)
