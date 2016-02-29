@@ -1873,9 +1873,9 @@ describe('Juttle Service Tests', function() {
         });
     });
 
-    describe('/version', function() {
+    describe('/api/v0/version-info', function() {
         it('contains component versions', function() {
-            return chakram.get(juttleHostPort + '/version')
+            return chakram.get(juttleBaseUrl + '/version-info')
                 .then(function(response) {
                     let versionInfo = response.body;
                     let VERSION_REGEX = /[0-9]+\.[0-9]+\.[0-9]+/;
