@@ -817,7 +817,7 @@ describe('Juttle Service Tests', function() {
                     expect(response.body.logs).to.have.length.gt(0);
                     _.each(response.body.logs, function(log) {
                         expect(log.type).to.equal('log');
-                        expect(log).to.include.keys('name', 'level', 'arguments');
+                        expect(log).to.include.keys('name', 'level', 'arguments', 'time');
                     });
                 })
                 .then(function() {
