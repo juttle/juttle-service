@@ -1,0 +1,6 @@
+{
+    "juttle-service": {
+        "port": 9183,
+        "output": "my-log.txt"
+    }
+}

@@ -41,7 +41,7 @@ usage: [--port <port>] [--root <path>]
        -h, --help:                            Print this help and exit
 ```
 
-``juttle-service`` uses log4js for logging and by default logs to ``log/juttle-service.log``.
+``juttle-service`` uses log4js for logging and by default logs to the console when in the foreground, ``/var/log/juttle-service.log`` when in the background.
 
 ### Juttle config file
 
@@ -58,16 +58,22 @@ The Juttle Service configuration options (default values shown):
         "compress_response": true,
 
         // Time (in ms) a finished job should wait for the first websocket
-        // to connect before disposing of the results.       
+        // to connect before disposing of the results.
         "delayed_job_cleanup": 10000,
 
         // The number messages job should buffer for sending to
         // websockets that join after the job has started.
-        "max_saved_messages": 1024
+        "max_saved_messages": 1024,
+
+        // After a job has finished, wait this many ms before closing the
+        // websocket connection associated with the job.
+        "delayed_endpoint_close": 10000
     },
     "adapters": { ... }
 }
 ```
+
+In addition, all command-line arguments other than `--config` can also be specified in ``juttle/config.json`` via their long arguments. When specified, command line arguments override any values found in the configuration file.
 
 ### Module resolution
 

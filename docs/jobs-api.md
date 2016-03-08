@@ -302,3 +302,21 @@ GET /api/v0/version-info HTTP/1.1
     "juttle-elastic-adapter": "0.5.0"
 }
 ```
+
+###GET /api/v0/config-info
+
+Returns the configuration for juttle-service.
+
+
+```
+GET /api/v0/config-info HTTP/1.1
+```
+
+```
+{
+    "port": 2000,
+    "root: "/home/ubuntu/juttles",
+    max_saved_messages: 1024
+...
+}
+```
