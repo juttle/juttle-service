@@ -3,6 +3,7 @@
 
 /* eslint no-console: 0 */
 var _ = require('underscore');
+var path = require('path');
 var minimist = require('minimist');
 var daemonize = require('daemon');
 var service = require('..').service;
@@ -73,7 +74,7 @@ if (opts.daemonize) {
 
 require('log4js').getLogger('juttle-service').debug('initializing');
 
-var service_opts = {port: opts.port, root_directory: opts.root};
+var service_opts = {port: opts.port, root_directory: path.resolve(opts.root)};
 
 if (_.has(opts, 'config')) {
     service_opts.config_path = opts['config'];
