@@ -20,6 +20,12 @@ $ npm install juttle-service
 
 We've tested with nodejs 4.2.3 and npm 2.14.17. Other combinations of nodejs and npm likely work, but we haven't tested all combinations.
 
+## Ecosystem
+
+Here's how the juttle-service module fits into the overall [Juttle Ecosystem](https://github.com/juttle/juttle/blob/master/docs/juttle_ecosystem.md):
+
+[![Juttle Ecosystem](https://github.com/juttle/juttle/raw/master/docs/images/JuttleEcosystemDiagram.png)](https://github.com/juttle/juttle/blob/master/docs/juttle_ecosystem.md)
+
 ## Options and Configuration
 
 Here are the full command line options supported by the daemon:
@@ -58,7 +64,7 @@ The Juttle Service configuration options (default values shown):
         "compress_response": true,
 
         // Time (in ms) a finished job should wait for the first websocket
-        // to connect before disposing of the results.       
+        // to connect before disposing of the results.
         "delayed_job_cleanup": 10000,
 
         // The number messages job should buffer for sending to
