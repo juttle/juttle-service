@@ -39,7 +39,7 @@ describe('juttle-service-client tests', function() {
         findFreePort(10000, 20000)
         .then((freePort) => {
             server = 'localhost:' + freePort;
-            juttle_service = service.run({port: freePort, root_directory: juttleRoot, delayed_endpoint_close: 2000});
+            juttle_service = service.run({port: freePort, root: juttleRoot, delayed_endpoint_close: 2000});
         });
     });
 
@@ -90,13 +90,16 @@ describe('juttle-service-client tests', function() {
         done();
     });
 
+    const RETRY_INTERVAL = 200;
+    const MAX_RETRIES = 50;
+
     it('Can call list_jobs for all jobs', function() {
         let opts = {};
         client.command(server, opts, 'list_jobs');
         return retry(function() {
             expect(current_output).to.contain('[]');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can call list_observers for all observers', function() {
@@ -105,7 +108,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_output).to.contain('[]');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can call subscribe for an observer id', function() {
@@ -114,7 +117,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_output).to.contain('Subscribing to all jobs associated with observer');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can call subscribe for a job id', function() {
@@ -123,7 +126,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_output).to.contain('Web socket connection closed, exiting');
             expect(exit_status).to.equal(0);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can delete a job', function() {
@@ -132,7 +135,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_errors).to.contain('No such job: myjob');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can run a job', function() {
@@ -141,7 +144,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_output).to.contain('Started job: {"job_id":');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can run a job with --wait', function() {
@@ -150,7 +153,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_output).to.contain('Starting program and waiting for it to finish');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can run a job with syntax errors and get errors back', function() {
@@ -159,7 +162,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_errors).to.contain('SYNTAX-ERROR-WITH-EXPECTED');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can get_inputs', function() {
@@ -168,7 +171,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_output).to.contain('"value": "my"');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can get_inputs with errors', function() {
@@ -177,7 +180,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_errors).to.contain('invalid input inval');
             expect(exit_status).to.equal(1);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Can call custom provided command', function() {
@@ -187,7 +190,7 @@ describe('juttle-service-client tests', function() {
             expect(mycmd_called).to.equal(true);
             expect(myarg_value).to.equal('foo');
             expect(exit_status).to.equal(undefined);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
     it('Get Usage for unrecognized command', function() {
@@ -195,7 +198,7 @@ describe('juttle-service-client tests', function() {
         return retry(function() {
             expect(current_output).to.contain('usage: ');
             expect(exit_status).to.equal(1);
-        }, {interval: 100, max_tries: 10});
+        }, {interval: RETRY_INTERVAL, max_tries: MAX_RETRIES});
     });
 
 

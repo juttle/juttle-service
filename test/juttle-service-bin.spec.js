@@ -18,7 +18,7 @@ describe('juttle-service-client binary', function() {
         findFreePort(10000, 20000)
         .then((freePort) => {
             server = 'localhost:' + freePort;
-            juttle_service = service.run({port: freePort, root_directory: __dirname});
+            juttle_service = service.run({port: freePort, root: __dirname});
         });
     });
 

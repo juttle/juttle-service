@@ -103,15 +103,11 @@ describe('Juttle Service Tests', function() {
             // just so we get increased code coverage in routes.js
             juttle_service = service.run({
                 port: freePort,
-                root_directory: juttleRoot,
-                config: {
-                    'juttle-service': {
-                        delayed_endpoint_close: 2000,
-                        max_saved_messages: 1000,
-                        delayed_job_cleanup: 10000,
-                        compress_response: false
-                    }
-                }
+                root: juttleRoot,
+                delayed_endpoint_close: 2000,
+                max_saved_messages: 1000,
+                delayed_job_cleanup: 10000,
+                compress_response: false
             });
         });
     });
