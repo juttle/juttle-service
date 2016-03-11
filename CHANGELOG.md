@@ -9,7 +9,7 @@ Released 2016-03-10
 - Update to juttle version 0.6.0. [[#69](https://github.com/juttle/juttle-service/pull/69)]
 - The default root path for juttle program files is now the current working directory [[#67](https://github.com/juttle/juttle-service/pull/67)]
 - Don't specify a default view when compiling programs [[#64](https://github.com/juttle/juttle-service/pull/64)]
-- Log messages viewable in the browser now contain timestamps [[#65](https://github.com/juttle/juttle-service/pull/65)]
+- Log messages returned as a part of program output now contain timestamps [[#65](https://github.com/juttle/juttle-service/pull/65)]
 - Minor changes to README to aid in understanding the overall ecosystem [[#66](https://github.com/juttle/juttle-service/pull/66)]
 
 
