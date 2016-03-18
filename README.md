@@ -72,8 +72,10 @@ The Juttle Service configuration options (default values shown):
         "max_saved_messages": 1024,
 
         // After a job has finished, wait this many ms before closing the
-        // websocket connection associated with the job.
-        "delayed_endpoint_close": 10000
+        // websocket connection associated with the job. A well behaved
+        // client should close the socket before this time, but we close it
+        // server-side to avoid leaking sockets.
+        "delayed_endpoint_close": 600000
     },
     "adapters": { ... }
 }
