@@ -1216,6 +1216,8 @@ describe('Juttle Service Tests', function() {
                         data.views[0].view_id = 'view';
                         data.views[1].view_id = 'view';
 
+                        expect(data.juttleEnv.now).to.be.instanceOf(Date);
+
                         expect(data.views).to.deep.equal([
                             {
                                 type: 'table',

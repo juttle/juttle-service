@@ -89,6 +89,26 @@ describe('juttle-subprocess', function() {
         });
     });
 
+    it('program_started contains juttleEnv with "now" value', function() {
+        process.emit('message', {
+            cmd: 'run',
+            bundle: {
+                program: 'emit -limit 1 | put now = :now: | view table'
+            }
+        });
+
+        return waitForMessage({ type: 'done' })
+        .then(function() {
+            var programStartedMessage = findMessage({ type: 'program_started' });
+            var juttleEnv = JSDP.deserialize(programStartedMessage).juttleEnv;
+            var message = findMessage({ type: 'data' });
+            var points = JSDP.deserialize(message.data.points);
+            // Verify that the now value in juttleEnv is truly `now`
+            // by comparing against the now field created in the juttle above.
+            expect(points[0].now.getTime()).to.equal(juttleEnv.now.getTime());
+        });
+    });
+
     it('can emit compile erro correctly ', function() {
         process.emit('message', {
             cmd: 'run',
