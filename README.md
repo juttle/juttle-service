@@ -85,10 +85,7 @@ In addition, all command-line arguments other than `--config` can also be specif
 
 ### Module resolution
 
-When juttle-service resolves module references in juttle programs while creating program bundles, it searches the following locations:
-* The configured root directory.
-* The same location as the current juttle program. For example, if a program is at ``/home/user/program.juttle`` and refers to a module ``module.juttle``, juttle-service looks in ``/home/user`` for ``module.juttle``.
-* Any locations in the environment variable JUTTLE_MODULE_PATH (colon-separated list of directories).
+For information on how modules are resolved, see the "Importing Modules" section in the general [juttle documentation](https://github.com/juttle/juttle/blob/master/docs/concepts/programming_constructs.md#importing-modules) on programming constructs.
 
 ## Testing
 
