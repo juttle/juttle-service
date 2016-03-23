@@ -72,7 +72,11 @@ Sent when a new program is executed.
       options {
           ...
       }
-  }]
+  }],
+  juttleEnv: {
+      // The value of :now: used in program execution.
+      now: "2015-11-14T02:39:48.833Z"
+  }
 }
 ```
 
