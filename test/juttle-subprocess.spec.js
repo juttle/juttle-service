@@ -78,7 +78,7 @@ describe('juttle-subprocess', function() {
         })
         .then(function() {
             var message = findMessage({ type: 'data' });
-            var points = JSDP.deserialize(message.data.points);
+            var points = JSDP.deserialize(message.data.data);
             expect(points).to.deep.equal([
                 { time: new Date('2014-01-01T00:00:00.000Z') }
             ]);
@@ -102,7 +102,7 @@ describe('juttle-subprocess', function() {
             var programStartedMessage = findMessage({ type: 'program_started' });
             var juttleEnv = JSDP.deserialize(programStartedMessage).juttleEnv;
             var message = findMessage({ type: 'data' });
-            var points = JSDP.deserialize(message.data.points);
+            var points = JSDP.deserialize(message.data.data);
             // Verify that the now value in juttleEnv is truly `now`
             // by comparing against the now field created in the juttle above.
             expect(points[0].now.getTime()).to.equal(juttleEnv.now.getTime());

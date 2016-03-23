@@ -95,7 +95,7 @@ Sent when a new set of points are available for display/handling by a given view
   "type": "points",
   "job_id": "edb5a183-bd74-4ec7-870f-db20c84d45ab",
   "view_id": "view0",
-  "points": [{
+  "data": [{
       "foo": "bar",
       "time": "2015-11-14T02:39:49.833Z"
   }],
@@ -112,7 +112,7 @@ Sent periodically to show time progression.
   "type": "tick",
   "job_id": "edb5a183-bd74-4ec7-870f-db20c84d45ab",
   "view_id": "view0",
-  "time": "2015-11-14T02:39:48.833Z",
+  "data": "2015-11-14T02:39:48.833Z",
 }
 ```
 
