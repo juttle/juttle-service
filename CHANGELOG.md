@@ -1,6 +1,16 @@
 # Change Log
 This file documents all notable changes to juttle-service. The release numbering uses [semantic versioning](http://semver.org).
 
+## 0.5.0
+Released 2016-03-24
+
+### Minor Changes
+- Update to juttle version 0.7.0 [[#76](https://github.com/juttle/juttle-service/pull/76)]
+- `view:mark`, `view:tick`, and `view:points` now emit their data in a 'data' property. [[#633](https://github.com/juttle/juttle/pull/633)]
+- A `job_start` message now contains the time at which the program was started. [[#50](https://github.com/juttle/juttle-service/issues/50)]
+- Websocket connections are now held open longer waiting for them to be closed by the client. [[#72](https://github.com/juttle/juttle-service/issues/72)]
+- Change how modules are resolved to reflect changes in Juttle 0.7.0. Juttle programs should import modules using relative pathnames which are resolved relative to the file doing the import. [[#513](https://github.com/juttle/juttle/issues/513)]
+
 ## 0.4.0
 Released 2016-03-10
 
