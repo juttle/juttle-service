@@ -38,9 +38,12 @@ function usage() {
 var opts = minimist(process.argv.slice(2));
 
 // All arguments to this program have associated switches.
-if (_.has(opts, '_')) {
+if (_.has(opts, '_') && opts['_'].length !== 0) {
     usage();
 }
+
+// Take '_' out now, we don't need it any longer.
+opts = _.omit(opts, '_');
 
 // Expand any single-letter option to its full-length equalivent.
 _.each(possible_opts, function(opt, short) {
