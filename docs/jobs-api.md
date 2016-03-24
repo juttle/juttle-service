@@ -129,8 +129,8 @@ POST /api/v0/jobs HTTP/1.1
     "errors": [],
     "output": {
         "view0": {
-            "data": [{type: 'mark', 'time:date': '1970-01-01T00:00:00.000Z'},
-                     {"type": "points", "points": [{"foo": "bar", "time:date": "1970-01-01T00:00:00.000Z"}]}],
+            "data": [{type: 'mark', data: {'time:date': '1970-01-01T00:00:00.000Z'}},
+                     {"type": "points", "data": [{"foo": "bar", "time:date": "1970-01-01T00:00:00.000Z"}]}],
             "options": {
                 "title": "My Table"
             },

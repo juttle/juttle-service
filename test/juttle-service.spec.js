@@ -71,7 +71,7 @@ var has_syntax_error_info_obj = {
                     line: 4,
                     offset: 89
                 },
-                filename: 'main',
+                filename: `${juttleRoot}/has-syntax-error.juttle`,
                 start: {
                     column: 12,
                     line: 4,
@@ -336,7 +336,7 @@ describe('Juttle Service Tests', function() {
                                         'line': 1,
                                         'offset': 39
                                     },
-                                    'filename': 'main',
+                                    'filename': `${juttleRoot}/missing-module.juttle`,
                                     'start': {
                                         'column': 1,
                                         'line': 1,
@@ -370,7 +370,6 @@ describe('Juttle Service Tests', function() {
             var test_module;
             var remote_module_program;
             var subdir_module;
-            var module_relative_to_root_program;
             var module_relative_to_program_program;
 
             before(function() {
@@ -379,7 +378,6 @@ describe('Juttle Service Tests', function() {
                                           'test-module.juttle',
                                           'remote-module.juttle',
                                           'subdir/subdir-module.juttle',
-                                          'subdir/modules-relative-to-root.juttle',
                                           'subdir/modules-relative-to-program.juttle'
                                          ], function(filename) {
                     return fs.readFileAsync(juttleRoot + '/' + filename, 'utf8');
@@ -390,8 +388,7 @@ describe('Juttle Service Tests', function() {
                     test_module = files[2];
                     remote_module_program = files[3];
                     subdir_module = files[4];
-                    module_relative_to_root_program = files[5];
-                    module_relative_to_program_program = files[6];
+                    module_relative_to_program_program = files[5];
                 });
             });
 
@@ -414,10 +411,11 @@ describe('Juttle Service Tests', function() {
                     bundle: {
                         program: module_program,
                         modules: {
-                            'test-module.juttle': test_module
+                            './test-module.juttle': test_module
                         }
                     }
                 });
+
                 return chakram.wait();
             });
 
@@ -436,20 +434,6 @@ describe('Juttle Service Tests', function() {
                 return chakram.wait();
             });
 
-            it('Program with modules specified relative to root directory', function() {
-                var response = chakram.get(juttleBaseUrl + '/paths/subdir/modules-relative-to-root.juttle');
-                expect(response).to.have.status(200);
-                expect(response).to.have.json({
-                    bundle: {
-                        program: module_relative_to_root_program,
-                        modules: {
-                            '/subdir/subdir-module.juttle': subdir_module
-                        }
-                    }
-                });
-                return chakram.wait();
-            });
-
             it('Program with modules specified relative to program', function() {
                 var response = chakram.get(juttleBaseUrl + '/paths/subdir/modules-relative-to-program.juttle');
                 expect(response).to.have.status(200);
@@ -457,7 +441,7 @@ describe('Juttle Service Tests', function() {
                     bundle: {
                         program: module_relative_to_program_program,
                         modules: {
-                            'subdir-module.juttle': subdir_module
+                            './subdir-module.juttle': subdir_module
                         }
                     }
                 });
@@ -791,9 +775,15 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'bar', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', data: [{foo: 'bar', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
-                                _jut_time_bounds: []
+                                _jut_time_bounds: [
+                                    {
+                                        'from': '$date$1970-01-01T00:00:00.000Z',
+                                        'last': null,
+                                        'to': null
+                                    }
+                                ]
                             },
                             type: 'text'
                         }
@@ -879,25 +869,37 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'mark', 'time': '$date$1970-01-01T00:00:00.000Z'},
-                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:00.000Z'}, {'time': '$date$1970-01-01T00:00:01.000Z'}]},
-                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:02.000Z'},
-                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:02.000Z'}]},
-                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:04.000Z'}],
+                            data: [{type: 'mark', data: {'time': '$date$1970-01-01T00:00:00.000Z'}},
+                                   {type: 'points', data: [{'time': '$date$1970-01-01T00:00:00.000Z'}, {'time': '$date$1970-01-01T00:00:01.000Z'}]},
+                                   {type: 'mark', data: {'time': '$date$1970-01-01T00:00:02.000Z'}},
+                                   {type: 'points', data: [{'time': '$date$1970-01-01T00:00:02.000Z'}]},
+                                   {type: 'mark', data: {'time': '$date$1970-01-01T00:00:04.000Z'}}],
                             options: {
-                                _jut_time_bounds: [],
+                                _jut_time_bounds: [
+                                    {
+                                        from: '$date$1970-01-01T00:00:00.000Z',
+                                        last: null,
+                                        to: null
+                                    }
+                                ],
                                 format: 'raw'
                             },
                             type: 'text'
                         },
                         view1: {
-                            data: [{type: 'mark', 'time': '$date$1970-01-01T00:00:00.000Z'},
-                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:00.000Z'}, {'time': '$date$1970-01-01T00:00:01.000Z'}]},
-                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:02.000Z'},
-                                   {type: 'points', points: [{'time': '$date$1970-01-01T00:00:02.000Z'}]},
-                                   {type: 'mark', 'time': '$date$1970-01-01T00:00:04.000Z'}],
+                            data: [{type: 'mark', data: {'time': '$date$1970-01-01T00:00:00.000Z'}},
+                                   {type: 'points', data: [{'time': '$date$1970-01-01T00:00:00.000Z'}, {'time': '$date$1970-01-01T00:00:01.000Z'}]},
+                                   {type: 'mark', data: {'time': '$date$1970-01-01T00:00:02.000Z'}},
+                                   {type: 'points', data: [{'time': '$date$1970-01-01T00:00:02.000Z'}]},
+                                   {type: 'mark', data: {'time': '$date$1970-01-01T00:00:04.000Z'}}],
                             options: {
-                                _jut_time_bounds: [],
+                                _jut_time_bounds: [
+                                    {
+                                        from: '$date$1970-01-01T00:00:00.000Z',
+                                        last: null,
+                                        to: null
+                                    }
+                                ],
                                 title: 'My Table'
                             },
                             type: 'table'
@@ -916,9 +918,15 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'bar', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', data: [{foo: 'bar', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
-                                _jut_time_bounds: []
+                                _jut_time_bounds: [
+                                    {
+                                        from: '$date$1970-01-01T00:00:00.000Z',
+                                        last: null,
+                                        to: null
+                                    }
+                                ]
                             },
                             type: 'text'
                         }
@@ -944,9 +952,15 @@ describe('Juttle Service Tests', function() {
                     warnings: [],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{foo: 'baz', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
+                            data: [{type: 'points', data: [{foo: 'baz', 'time': '$date$1970-01-01T00:00:00.000Z'}]}],
                             options: {
-                                _jut_time_bounds: []
+                                _jut_time_bounds: [
+                                    {
+                                        from: '$date$1970-01-01T00:00:00.000Z',
+                                        last: null,
+                                        to: null
+                                    }
+                                ]
                             },
                             type: 'text'
                         }
@@ -1009,9 +1023,15 @@ describe('Juttle Service Tests', function() {
                     }],
                     output: {
                         view0: {
-                            data: [{type: 'points', points: [{}]}],
+                            data: [{type: 'points', data: [{}]}],
                             options: {
-                                _jut_time_bounds: []
+                                _jut_time_bounds: [
+                                    {
+                                        from: '$date$1970-01-01T00:00:00.000Z',
+                                        last: null,
+                                        to: null
+                                    }
+                                ]
                             },
                             type: 'table'
                         }
@@ -1219,14 +1239,26 @@ describe('Juttle Service Tests', function() {
                                 type: 'table',
                                 view_id: 'view',
                                 options: {
-                                    '_jut_time_bounds': []
+                                    '_jut_time_bounds': [
+                                        {
+                                            last: null,
+                                            from: null,
+                                            to: null
+                                        }
+                                    ]
                                 }
                             },
                             {
                                 type: 'logger',
                                 view_id: 'view',
                                 options: {
-                                    '_jut_time_bounds': []
+                                    '_jut_time_bounds': [
+                                        {
+                                            last: null,
+                                            from: null,
+                                            to: null
+                                        }
+                                    ]
                                 }
                             }
                         ]);
@@ -1266,16 +1298,16 @@ describe('Juttle Service Tests', function() {
                         num_points++;
                         expect(data.view_id).to.match(/view\d+/);
                         expect(data.job_id).to.equal(job_id);
-                        expect(data.points).to.have.length(1);
+                        expect(data.data).to.have.length(1);
 
                         // val properties come from the
                         // input. val2 properties come from the
                         // module.
-                        if (_.has(data.points[0], 'fromInput')) {
-                            expect(data.points[0].val).to.equal(20);
-                            expect(data.points[0].datePlus2s.getTime()).to.equal(new Date(3000).getTime());
+                        if (_.has(data.data[0], 'fromInput')) {
+                            expect(data.data[0].val).to.equal(20);
+                            expect(data.data[0].datePlus2s.getTime()).to.equal(new Date(3000).getTime());
                         } else {
-                            expect(data.points[0].val2).to.equal(30);
+                            expect(data.data[0].val2).to.equal(30);
                         }
                     }
                 });
